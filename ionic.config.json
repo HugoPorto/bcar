@@ -1,0 +1,7 @@
+{
+  "name": "bcar",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
