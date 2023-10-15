@@ -1,17 +1,32 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+  <ion-toolbar color="dark">
+    <ion-title> Créditos </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-list style="padding: 10px">
+    <ion-item>
+      <h3>Software</h3>
+    </ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col><ion-label>Desenvolvedor:</ion-label></ion-col>
+        <ion-col style="text-align: right"
+          ><ion-label>Hugo Porto</ion-label></ion-col
+        >
+      </ion-row>
+    </ion-grid>
+    <ion-item>
+      <h3>Contato</h3>
+    </ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col><ion-label>Email:</ion-label></ion-col>
+        <ion-col style="text-align: right"
+          ><ion-label>victor.porto7@gmail.com</ion-label></ion-col
+        >
+      </ion-row>
+    </ion-grid>
+  </ion-list>
 </ion-content>

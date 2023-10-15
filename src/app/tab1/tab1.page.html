@@ -1,17 +1,36 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+  <ion-toolbar color="dark">
+    <ion-title> Orçamentos </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list *ngFor="let budget of budgets">
+    <!-- <ion-item *ngFor="let budget of budgets | async"> -->
+    <!-- <ion-item (click)="editNavigate(budget.id)">
+      <ion-grid>
+        <ion-row>
+          <ion-col><ion-label>Nº: {{ budget.id }}</ion-label></ion-col>
+          <ion-col><ion-label>Cliente: {{ budget.client }}</ion-label></ion-col>
+          <ion-col><ion-label>{{ budget.reference }}</ion-label></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item> -->
+    <ion-card (click)="editNavigate(budget.id)" color="light">
+      <ion-card-header>
+        <ion-card-subtitle>Nº: {{ budget.id }}</ion-card-subtitle>
+        <ion-card-title>Cliente: {{ budget.client }}</ion-card-title>
+      </ion-card-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+      <ion-card-content>
+        {{ budget.reference }}
+      </ion-card-content>
+    </ion-card>
+    <ion-item>
+
+      <ion-button (click)="removeBudget(budget.id)">Remover</ion-button>
+      <ion-button (click)="getBudget(budget.id)">Baixar Orçamento</ion-button>
+
+    </ion-item>
+  </ion-list>
 </ion-content>

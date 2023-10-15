@@ -1,5 +1,6 @@
 import { Component, EnvironmentInjector, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tabs',
@@ -11,5 +12,12 @@ import { IonicModule } from '@ionic/angular';
 export class TabsPage {
   public environmentInjector = inject(EnvironmentInjector);
 
-  constructor() {}
+  constructor(private router: Router) {}
+
+  new() {
+    this.router.navigate(['/tabs/tab2'], {
+      queryParams: { id: null },
+      queryParamsHandling: 'merge',
+    });
+  }
 }
