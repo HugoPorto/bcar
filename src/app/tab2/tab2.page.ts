@@ -3,13 +3,12 @@ import { IonicModule, AlertController } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { StorageService } from './../services/storage.service';
 import { DatabaseService } from '../services/database.service';
-import { ActivatedRoute } from '@angular/router';
 import { Budget } from '../models/budget';
 import { IBudget } from '../repositories/interfaces/ibudget';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tab2',
@@ -21,8 +20,9 @@ import { Router } from '@angular/router';
 export class Tab2Page {
   modelBudget!: Budget;
   budgets: Budget[] = [];
-  total: string = '0';
+  total: string = '0,00';
   client: string = '';
+  labor: string = '';
   budgetId: string = '';
 
   constructor(
@@ -45,7 +45,9 @@ export class Tab2Page {
         this.storage.getBudget(budgetId).then((budget) => {
           var dataBudget: IBudget[] = JSON.parse(budget?.budget || '');
 
-          this.modelBudget.client = budget?.client || '';
+          this.labor = budget?.labor || '';
+
+          this.client = budget?.client || '';
 
           this.budgets = [];
 
@@ -54,7 +56,6 @@ export class Tab2Page {
             newbudget.description = element._description;
             newbudget.unitaryValue = element._unitaryValue;
             newbudget.totalValue = element._totalValue;
-            newbudget.client = element._client;
             newbudget.created = element._created;
             newbudget.modified = element._modified;
             this.budgets.push(newbudget);
@@ -72,10 +73,11 @@ export class Tab2Page {
     if (budgetId === 0) {
       this.client = '';
       this.budgetId = '';
+      this.labor = '0,00';
     }
     this.restartBudget();
     this.budgets = [];
-    this.total = '0';
+    this.total = '0,00';
   }
 
   async alertFormError(message: string) {
@@ -97,8 +99,9 @@ export class Tab2Page {
   }
 
   addBudget() {
-    if (!this.modelBudget.verifyFields()) {
-      this.alertFormError('Preencha os campos obrigatírios!');
+    const verify = this.modelBudget.verifyFields(this.client, this.labor);
+    if (!verify[0]) {
+      this.alertFormError(verify[1]);
     } else {
       this.updateTotalValue();
 
@@ -111,16 +114,6 @@ export class Tab2Page {
   }
 
   buildBudget() {
-    if (
-      this.client == null ||
-      this.client == '' ||
-      this.client !== this.modelBudget.client
-    ) {
-      if (this.modelBudget) {
-        this.client = this.modelBudget.client;
-      }
-    }
-
     this.restartBudget();
   }
 
@@ -128,18 +121,23 @@ export class Tab2Page {
     this.modelBudget = new Budget('1', 'Peça');
     this.modelBudget.unitaryValue = '0,00';
     this.modelBudget.totalValue = '0,00';
-    this.modelBudget.client = this.client;
   }
 
   calculateTotalValue(): string {
     let total = 0;
 
     for (const budget of this.budgets) {
-      const totalValue = parseFloat(budget.totalValue.replace(',', '.'));
+      let totalValue = parseFloat(budget.totalValue.replace(',', '.'));
 
       if (!isNaN(totalValue)) {
         total += totalValue;
       }
+    }
+
+    let laborValue = parseFloat(this.labor.replace(',', '.'));
+
+    if (!isNaN(laborValue)) {
+      total += laborValue;
     }
 
     return total.toFixed(2).replace('.', ',');
@@ -155,7 +153,9 @@ export class Tab2Page {
   async createBudget() {
     await this.storage.addBudget(
       JSON.stringify(this.budgets),
-      this.modelBudget.client
+      this.client,
+      this.total,
+      this.labor
     );
 
     this.restartData();
@@ -164,10 +164,14 @@ export class Tab2Page {
   }
 
   async updateBudget() {
+    this.total = this.calculateTotalValue();
+
     await this.storage.updateBudgetById(
       this.budgetId,
       JSON.stringify(this.budgets),
-      this.modelBudget.client
+      this.client,
+      this.total,
+      this.labor
     );
 
     this.restartData();

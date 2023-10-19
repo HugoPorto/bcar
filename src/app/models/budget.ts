@@ -4,7 +4,6 @@ export class Budget {
   private _description!: string;
   private _unitaryValue!: string;
   private _totalValue!: string;
-  private _client!: string;
   private _created!: string;
   private _modified!: string;
 
@@ -53,14 +52,6 @@ export class Budget {
     this._totalValue = value;
   }
 
-  get client(): string {
-    return this._client;
-  }
-
-  set client(value: string) {
-    this._client = value;
-  }
-
   get created(): string {
     return this._created;
   }
@@ -77,21 +68,23 @@ export class Budget {
     this._modified = value;
   }
 
-  verifyFields(): boolean {
-    if (this.description == null || this.description == '') {
-      return false;
+  verifyFields(client: string, labor: string): any {
+    if (client == null || client == '') {
+      return [false, 'Preencha o cliente!'];
+    } else if (labor == null || labor == '') {
+      return [false, 'Preencha a mão de obra!'];
+    } else if (this.description == null || this.description == '') {
+      return [false, 'Preencha a descrição!'];
     } else if (this.unitaryValue == null || this.unitaryValue == '') {
-      return false;
+      return [false, 'Preencha o valor unitário!'];
     } else if (this.quantity == null || this.quantity == '') {
-      return false;
+      return [false, 'Preencha a quantidade!'];
     } else if (this.unitaryValue === '0,00') {
-      return false;
+      return [false, 'O valor uniátio não pode ser zero!'];
     } else if (this.unit == null || this.unit == '') {
-      return false;
-    } else if (this.client == null || this.client == '') {
-      return false;
+      return [false, 'Preencha a unidade!'];
     } else {
-      return true;
+      return [true];
     }
   }
 

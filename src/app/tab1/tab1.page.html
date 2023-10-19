@@ -3,34 +3,26 @@
     <ion-title> Orçamentos </ion-title>
   </ion-toolbar>
 </ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-list *ngFor="let budget of budgets">
-    <!-- <ion-item *ngFor="let budget of budgets | async"> -->
-    <!-- <ion-item (click)="editNavigate(budget.id)">
-      <ion-grid>
-        <ion-row>
-          <ion-col><ion-label>Nº: {{ budget.id }}</ion-label></ion-col>
-          <ion-col><ion-label>Cliente: {{ budget.client }}</ion-label></ion-col>
-          <ion-col><ion-label>{{ budget.reference }}</ion-label></ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item> -->
-    <ion-card (click)="editNavigate(budget.id)" color="light">
+<ion-content color="light">
+  <div *ngFor="let budget of budgets">
+    <ion-card>
       <ion-card-header>
         <ion-card-subtitle>Nº: {{ budget.id }}</ion-card-subtitle>
-        <ion-card-title>Cliente: {{ budget.client }}</ion-card-title>
+        <ion-card-subtitle>Data: {{ budget.reference }}</ion-card-subtitle>
+        <ion-card-subtitle>Cliente: {{ budget.client }}</ion-card-subtitle>
+        <ion-card-subtitle>Total: R$ {{ budget.total }}</ion-card-subtitle>
+        <ion-card-subtitle>Mão de Obra: R$ {{ budget.labor }}</ion-card-subtitle>
+        <ion-card-subtitle>Total - Mão de Obra: R$ {{budget.laborAndTotal }}</ion-card-subtitle>
       </ion-card-header>
-
       <ion-card-content>
-        {{ budget.reference }}
+        <ion-button color="dark" (click)="removeBudget(budget.id)"><ion-icon slot="start"
+            name="trash-bin"></ion-icon>Remover</ion-button>
+        <ion-button color="dark" (click)="getBudget(budget.id)"><ion-icon slot="start" name="download"></ion-icon>Baixar
+          Orçamento</ion-button>
+        <ion-button color="dark" (click)="editNavigate(budget.id)"><ion-icon slot="start"
+            name="create"></ion-icon>Editar
+          Orçamento</ion-button>
       </ion-card-content>
     </ion-card>
-    <ion-item>
-
-      <ion-button (click)="removeBudget(budget.id)">Remover</ion-button>
-      <ion-button (click)="getBudget(budget.id)">Baixar Orçamento</ion-button>
-
-    </ion-item>
-  </ion-list>
+  </div>
 </ion-content>

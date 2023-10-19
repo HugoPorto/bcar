@@ -99,11 +99,26 @@ export class StorageService {
   /**
    * Add a new user
    */
-  async addBudget(budget: string, nameClient: string) {
+  async addBudget(
+    budget: string,
+    nameClient: string,
+    total: string,
+    labor: string
+  ) {
     const client = nameClient;
     const reference = this.dataAtualFormatada();
-    const sql = `INSERT INTO budgets (client, reference, budget) VALUES (?,?,?);`;
-    await this.db.run(sql, [client, reference, budget]);
+    const laborAndTotal = Math.abs(
+      parseFloat(total.replace(',', '.')) - parseFloat(labor.replace(',', '.'))
+    );
+    const sql = `INSERT INTO budgets (client, reference, budget, total, labor, laborAndTotal) VALUES (?,?,?,?,?,?);`;
+    await this.db.run(sql, [
+      client,
+      reference,
+      budget,
+      total,
+      labor,
+      laborAndTotal,
+    ]);
     await this.getBudgets();
 
     await Toast.show({
@@ -128,8 +143,18 @@ export class StorageService {
    * @param id
    * @param active
    */
-  async updateBudgetById(id: string, budget: string, nameClient: string) {
-    const sql = `UPDATE budgets SET budget='${budget}', client="${nameClient}" WHERE id=${id}`;
+  async updateBudgetById(
+    id: string,
+    budget: string,
+    nameClient: string,
+    total: string,
+    labor: string
+  ) {
+    const laborAndTotal = Math.abs(
+      parseFloat(total.replace(',', '.')) - parseFloat(labor.replace(',', '.'))
+    );
+
+    const sql = `UPDATE budgets SET budget='${budget}', client="${nameClient}", total="${total}", labor="${labor}", laborAndTotal="${laborAndTotal}" WHERE id=${id}`;
     await this.db.run(sql);
     await this.getBudgets();
 

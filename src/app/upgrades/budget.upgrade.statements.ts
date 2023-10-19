@@ -8,6 +8,9 @@ export class BudgetUpgradeStatements {
           client TEXT NOT NULL,
           reference TEXT NOT NULL,
           budget TEXT NOT NUll,
+          total TEXT NOT NULL,
+          labor TEXT NOT NULL,
+          laborAndTotal TEXT NOT NULL,
           active INTEGER DEFAULT 1
           );`,
       ],

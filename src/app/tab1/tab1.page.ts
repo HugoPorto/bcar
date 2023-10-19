@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
-import { IonicModule, ViewWillEnter } from '@ionic/angular';
+import { IonicModule, ViewWillEnter, Platform } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
 
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { StorageService } from './../services/storage.service';
 import { DataBudget } from '../repositories/interfaces/budget';
 import { of, switchMap } from 'rxjs';
-
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { IBudget } from '../repositories/interfaces/ibudget';
+import { Toast } from '@capacitor/toast';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -29,26 +30,69 @@ export class Tab1Page implements ViewWillEnter {
   constructor(
     private storage: StorageService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private platform: Platform
   ) {}
 
   ngOnInit() {
+    this.showPlatform();
     this.loadbudgets();
   }
 
-  pdfDownload(budgetArray: any[]) {
+  async showPlatform() {
+    let platform = '';
+    if (this.platform.is('android')) {
+      platform = 'android';
+    } else {
+      platform = 'desktop';
+    }
+    await Toast.show({
+      text: `Plataforma: ${platform}`,
+      duration: 'long',
+    });
+  }
+
+  pdfDownload(
+    budgetArray: any[],
+    client: string,
+    id: string,
+    total: string,
+    labor: string
+  ) {
     const tableHeaders = [
       'Item',
       'Quantidade',
+      'Unidade',
       'Descrição',
       'Valor Unitário',
       'Valor Total',
-      'Valor Total',
     ];
+
+    const laborAndTotal = Math.abs(
+      parseFloat(total.replace(',', '.')) - parseFloat(labor.replace(',', '.'))
+    );
 
     var dd = {
       content: [
-        { text: 'Orçamento', style: 'header' },
+        {
+          text: 'Orçamento Nº: ' + id,
+          style: 'header',
+        },
+        {
+          text: 'Total: ' + total,
+          style: 'subheader',
+        },
+        {
+          text: 'Mão de obra: ' + labor,
+          style: 'subheader',
+        },
+        {
+          text: 'Total - Mão de Obra: ' + laborAndTotal,
+          style: 'subheader',
+        },
+        {
+          text: 'Cliente: ' + client,
+          style: 'subheader',
+        },
         {
           style: 'tableExample',
           table: {
@@ -61,12 +105,34 @@ export class Tab1Page implements ViewWillEnter {
         header: {
           fontSize: 18,
           bold: true,
-          margin: 0,
+          marginBottom: 5,
+        },
+        subheader: {
+          fontSize: 14,
+          bold: true,
+          marginBottom: 5,
         },
       },
     };
     this.pdf = pdfMake.createPdf(dd);
-    this.pdf.download('demo.pdf');
+
+    if (this.platform.is('desktop')) {
+      this.pdf.download('Orçamento ' + client + '.pdf');
+    } else if (this.platform.is('android')) {
+      this.pdf.getBase64(async (data: any) => {
+        try {
+          let path = `pdf/bcar/orcameto_${client}.pdf`;
+          const result = await Filesystem.writeFile({
+            path,
+            data: data,
+            directory: Directory.Documents,
+            recursive: true,
+          });
+        } catch (e) {
+          console.error('Unable to write file', e);
+        }
+      });
+    }
   }
 
   editNavigate(budgetId: number) {
@@ -106,14 +172,65 @@ export class Tab1Page implements ViewWillEnter {
 
   async getBudget(id: number) {
     this.storage.getBudget(id.toString()).then((budget) => {
-      var dataBudget: IBudget[] = JSON.parse(budget?.budget || '');
-      var budgetArray: any[] = [];
-      dataBudget.forEach((element) => {
-        budgetArray.push(Object.values(element));
+      const dataBudget: IBudget[] = JSON.parse(budget?.budget || '');
+      const id = budget?.id || '';
+      const client = budget?.client || '';
+      const total = budget?.total || '';
+      const labor = budget?.labor || '';
+      const budgetArray: any[] = [];
+
+      dataBudget.forEach((element, index) => {
+        const orderedObject = {
+          _quantity: element._quantity,
+          _unit: element._unit,
+          _description: element._description,
+          _unitaryValue: element._unitaryValue,
+          _totalValue: element._totalValue,
+        };
+
+        const subArray = Object.values(orderedObject);
+        subArray.unshift((index + 1).toString());
+        budgetArray.push(subArray);
       });
 
-      // console.log(budgetArray);
-      this.pdfDownload(budgetArray);
+      this.pdfDownload(budgetArray, client, id.toString(), total, labor);
     });
   }
+
+  writeSecretFile = async () => {
+    await Filesystem.writeFile({
+      path: 'secrets/text.txt',
+      data: 'This is a test',
+      directory: Directory.Documents,
+      encoding: Encoding.UTF8,
+    });
+  };
+
+  readSecretFile = async () => {
+    const contents = await Filesystem.readFile({
+      path: 'secrets/text.txt',
+      directory: Directory.Documents,
+      encoding: Encoding.UTF8,
+    });
+
+    console.log('secrets:', contents);
+  };
+
+  deleteSecretFile = async () => {
+    await Filesystem.deleteFile({
+      path: 'secrets/text.txt',
+      directory: Directory.Documents,
+    });
+  };
+
+  readFilePath = async () => {
+    // Here's an example of reading a file with a full file path. Use this to
+    // read binary data (base64 encoded) from plugins that return File URIs, such as
+    // the Camera.
+    const contents = await Filesystem.readFile({
+      path: 'file:///var/mobile/Containers/Data/Application/22A433FD-D82D-4989-8BE6-9FC49DEA20BB/Documents/text.txt',
+    });
+
+    console.log('data:', contents);
+  };
 }

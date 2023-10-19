@@ -3,10 +3,35 @@
     <ion-title> Novo Orçamento </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content [fullscreen]="true">
+<ion-content color="light">
   <ion-item>
     <h3>Total: {{ total }}</h3>
   </ion-item>
+  <ion-item *ngIf="budgetId && budgets !== null && budgets.length > 0">
+    <div>
+      <ion-button fill="outline" expand="block" color="dark" (click)="updateBudget()">
+        <ion-icon slot="start" name="save"></ion-icon>
+        Atualizar</ion-button>
+    </div>
+  </ion-item>
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-input label="*Cliente:" name="client" [(ngModel)]="client"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-input label="*Mão de Obra:" name="labor" [(ngModel)]="labor"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
   <ion-card>
     <ion-card-content>
       <ion-list>
@@ -28,21 +53,23 @@
           <ion-input label="Valor Total R$:" name="totalValue" [(ngModel)]="modelBudget.totalValue"
             disabled></ion-input>
         </ion-item>
-        <ion-item>
-          <ion-input label="*Cliente:" name="client" [(ngModel)]="modelBudget.client"></ion-input>
-        </ion-item>
       </ion-list>
-      <ion-button (click)="addBudget()">Adicionar</ion-button>
-      <ion-button *ngIf="budgets !== null && budgets.length > 0" (click)="createBudget()">Salvar</ion-button>
-      <ion-button *ngIf="budgets !== null && budgets.length > 0">Salvar Enviar</ion-button>
-      <ion-button *ngIf="budgetId !== null && budgets.length > 0" (click)="updateBudget()">Atualizar</ion-button>
+      <ion-button fill="outline" expand="block" color="dark" (click)="addBudget()">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Adicionar
+      </ion-button>
+      <ion-button fill="outline" expand="block" color="dark" *ngIf="!budgetId && budgets !== null && budgets.length > 0"
+        (click)="createBudget()">
+        <ion-icon slot="start" name="save"></ion-icon>
+        Salvar
+      </ion-button>
     </ion-card-content>
   </ion-card>
-  <ion-list *ngIf="budgets !== null && budgets.length > 0">
+  <div *ngIf="budgets !== null && budgets.length > 0">
     <ion-card *ngFor="let budget of budgets; let index = index">
       <ion-card-header>
         <ion-card-subtitle>Quantidade {{ budget.quantity }}</ion-card-subtitle>
-        <ion-card-title>Cliente: {{ modelBudget.client }}</ion-card-title>
+        <ion-card-title>Cliente: {{ client }}</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
@@ -62,9 +89,11 @@
             <ion-col><ion-label>{{ budget.totalValue }}</ion-label></ion-col>
           </ion-row>
         </ion-grid>
-        <ion-button (click)="removeItemBudget(index)">Remover</ion-button>
+        <ion-button expand="block" color="dark" (click)="removeItemBudget(index)">
+          <ion-icon slot="start" name="trash-bin"></ion-icon>
+          Remover
+        </ion-button>
       </ion-card-content>
     </ion-card>
-  </ion-list>
-
+  </div>
 </ion-content>
