@@ -41,6 +41,8 @@
     "@capacitor/keyboard": "5.0.6",
     "@capacitor/status-bar": "5.0.6",
     "@capacitor/toast": "^5.0.6",
+    "@capawesome-team/capacitor-file-opener": "^5.0.3",
+    "@capawesome/capacitor-file-picker": "^5.1.1",
     "@ionic/angular": "^7.0.0",
     "@ionic/pwa-elements": "^3.2.2",
     "ionicons": "^7.0.0",

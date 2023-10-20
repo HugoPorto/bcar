@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicModule, ViewWillEnter, Platform } from '@ionic/angular';
+import {
+  IonicModule,
+  ViewWillEnter,
+  Platform,
+  AlertController,
+} from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -13,6 +18,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { IBudget } from '../repositories/interfaces/ibudget';
 import { Toast } from '@capacitor/toast';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { FileOpener } from '@capawesome-team/capacitor-file-opener';
+import { FilePicker } from '@capawesome/capacitor-file-picker';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -26,11 +33,15 @@ import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 export class Tab1Page implements ViewWillEnter {
   pdf: any;
   budgets: DataBudget[] = [];
+  imageSrc1: any;
+  imageSrc2: any;
+  filePath: any;
 
   constructor(
     private storage: StorageService,
     private router: Router,
-    private platform: Platform
+    private platform: Platform,
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {
@@ -40,6 +51,7 @@ export class Tab1Page implements ViewWillEnter {
 
   async showPlatform() {
     let platform = '';
+
     if (this.platform.is('android')) {
       platform = 'android';
     } else {
@@ -114,6 +126,7 @@ export class Tab1Page implements ViewWillEnter {
         },
       },
     };
+
     this.pdf = pdfMake.createPdf(dd);
 
     if (this.platform.is('desktop')) {
@@ -122,14 +135,29 @@ export class Tab1Page implements ViewWillEnter {
       this.pdf.getBase64(async (data: any) => {
         try {
           let path = `pdf/bcar/orcameto_${client}.pdf`;
+
           const result = await Filesystem.writeFile({
             path,
             data: data,
             directory: Directory.Documents,
             recursive: true,
           });
+
+          try {
+            await FileOpener.openFile({
+              path: result.uri,
+            });
+          } catch (e) {
+            await Toast.show({
+              text: `Erro: Acesso ao arquivo negado!`,
+              duration: 'long',
+            });
+          }
         } catch (e) {
-          console.error('Unable to write file', e);
+          await Toast.show({
+            text: `Erro: Acesso ao arquivo negado!`,
+            duration: 'long',
+          });
         }
       });
     }
@@ -206,15 +234,15 @@ export class Tab1Page implements ViewWillEnter {
     });
   };
 
-  readSecretFile = async () => {
-    const contents = await Filesystem.readFile({
-      path: 'secrets/text.txt',
-      directory: Directory.Documents,
-      encoding: Encoding.UTF8,
-    });
+  // readSecretFile = async () => {
+  //   const contents = await Filesystem.readFile({
+  //     path: 'secrets/text.txt',
+  //     directory: Directory.Documents,
+  //     encoding: Encoding.UTF8,
+  //   });
 
-    console.log('secrets:', contents);
-  };
+  //   console.log('secrets:', contents);
+  // };
 
   deleteSecretFile = async () => {
     await Filesystem.deleteFile({
@@ -223,14 +251,71 @@ export class Tab1Page implements ViewWillEnter {
     });
   };
 
-  readFilePath = async () => {
-    // Here's an example of reading a file with a full file path. Use this to
-    // read binary data (base64 encoded) from plugins that return File URIs, such as
-    // the Camera.
-    const contents = await Filesystem.readFile({
-      path: 'file:///var/mobile/Containers/Data/Application/22A433FD-D82D-4989-8BE6-9FC49DEA20BB/Documents/text.txt',
+  // readFilePath = async () => {
+  //   const contents = await Filesystem.readFile({
+  //     path: 'file:///var/mobile/Containers/Data/Application/22A433FD-D82D-4989-8BE6-9FC49DEA20BB/Documents/text.txt',
+  //   });
+
+  //   console.log('data:', contents);
+  // };
+
+  open = async () => {
+    await FileOpener.openFile({
+      path: 'content://com.android.providers.downloads.documents/document/msf%3A1000000073',
+    });
+  };
+
+  // pickFiles = async () => {
+  //   const result = await FilePicker.pickFiles({
+  //     types: ['image/jpg'],
+  //     multiple: false,
+  //     readData: true,
+  //   });
+
+  //   this.filePath = result.files[0].path;
+
+  //   this.imageSrc1 = 'data:image/jpg;base64,' + result.files[0].data;
+
+  //   const alert = await this.alertController.create({
+  //     message: result.files[0].data,
+  //     buttons: [
+  //       {
+  //         text: 'Fechar',
+  //         role: 'cancel',
+  //       },
+  //     ],
+  //   });
+
+  //   await alert.present();
+  // };
+
+  // pickImages = async () => {
+  //   const result = await FilePicker.pickImages({
+  //     multiple: false,
+  //     readData: true,
+  //   });
+
+  //   this.imageSrc1 = 'data:image/jpg;base64,' + result.files[0].data;
+  //   this.imageSrc2 = 'data:image/jpg;base64,' + result.files[1].data;
+  // };
+
+  pickPDFFiles = async () => {
+    const result = await FilePicker.pickFiles({
+      types: ['application/pdf'],
+      multiple: false,
+      readData: true,
     });
 
-    console.log('data:', contents);
+    result ? (this.filePath = result.files[0].path) : (this.filePath = '');
+  };
+
+  openFile = async () => {
+    try {
+      await FileOpener.openFile({
+        path: this.filePath,
+      });
+    } catch (e) {
+      alert(e);
+    }
   };
 }
