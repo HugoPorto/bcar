@@ -45,22 +45,11 @@ export class Tab1Page implements ViewWillEnter {
   ) {}
 
   ngOnInit() {
-    this.showPlatform();
     this.loadbudgets();
   }
 
-  async showPlatform() {
-    let platform = '';
-
-    if (this.platform.is('android')) {
-      platform = 'android';
-    } else {
-      platform = 'desktop';
-    }
-    await Toast.show({
-      text: `Plataforma: ${platform}`,
-      duration: 'long',
-    });
+  showlFilePath() {
+    alert(this.filePath);
   }
 
   pdfDownload(
@@ -68,7 +57,8 @@ export class Tab1Page implements ViewWillEnter {
     client: string,
     id: string,
     total: string,
-    labor: string
+    labor: string,
+    filePath: string
   ) {
     const tableHeaders = [
       'Item',
@@ -136,26 +126,41 @@ export class Tab1Page implements ViewWillEnter {
         try {
           let path = `pdf/bcar/orcameto_${client}.pdf`;
 
-          const result = await Filesystem.writeFile({
-            path,
-            data: data,
-            directory: Directory.Documents,
-            recursive: true,
-          });
+          if (!filePath) {
+            const result = await Filesystem.writeFile({
+              path,
+              data: data,
+              directory: Directory.Documents,
+              recursive: true,
+            });
 
-          try {
-            await FileOpener.openFile({
-              path: result.uri,
-            });
-          } catch (e) {
-            await Toast.show({
-              text: `Erro: Acesso ao arquivo negado!`,
-              duration: 'long',
-            });
+            this.storage.updateFilePathBudgetById(id, result.uri);
+
+            try {
+              await FileOpener.openFile({
+                path: result.uri,
+              });
+            } catch (e) {
+              await Toast.show({
+                text: `Erro: Acesso ao arquivo negado!`,
+                duration: 'long',
+              });
+            }
+          } else {
+            try {
+              await FileOpener.openFile({
+                path: filePath,
+              });
+            } catch (e) {
+              await Toast.show({
+                text: `Erro: Acesso ao arquivo negado!`,
+                duration: 'long',
+              });
+            }
           }
         } catch (e) {
           await Toast.show({
-            text: `Erro: Acesso ao arquivo negado!`,
+            text: `Erro: Não foi possível salvar o arquivo!`,
             duration: 'long',
           });
         }
@@ -205,6 +210,7 @@ export class Tab1Page implements ViewWillEnter {
       const client = budget?.client || '';
       const total = budget?.total || '';
       const labor = budget?.labor || '';
+      const filePath = budget?.filePath || '';
       const budgetArray: any[] = [];
 
       dataBudget.forEach((element, index) => {
@@ -221,7 +227,14 @@ export class Tab1Page implements ViewWillEnter {
         budgetArray.push(subArray);
       });
 
-      this.pdfDownload(budgetArray, client, id.toString(), total, labor);
+      this.pdfDownload(
+        budgetArray,
+        client,
+        id.toString(),
+        total,
+        labor,
+        filePath
+      );
     });
   }
 

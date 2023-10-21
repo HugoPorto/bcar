@@ -11,6 +11,7 @@ export class BudgetUpgradeStatements {
           total TEXT NOT NULL,
           labor TEXT NOT NULL,
           laborAndTotal TEXT NOT NULL,
+          filepath TEXT NULL,
           active INTEGER DEFAULT 1
           );`,
       ],

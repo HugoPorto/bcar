@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, Platform } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { StorageService } from './../services/storage.service';
 import { DatabaseService } from '../services/database.service';
 import { Budget } from '../models/budget';
 import { IBudget } from '../repositories/interfaces/ibudget';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 @Component({
   selector: 'app-tab2',
@@ -30,7 +31,8 @@ export class Tab2Page {
     private storage: StorageService,
     private databaseService: DatabaseService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private platform: Platform
   ) {
     this.buildBudget();
     // this.databaseService.downloadDatabase();
@@ -43,6 +45,7 @@ export class Tab2Page {
       if (budgetId) {
         this.budgetId = budgetId;
         this.storage.getBudget(budgetId).then((budget) => {
+          console.log(budget);
           var dataBudget: IBudget[] = JSON.parse(budget?.budget || '');
 
           this.labor = budget?.labor || '';
@@ -62,12 +65,25 @@ export class Tab2Page {
           });
 
           this.total = this.calculateTotalValue();
+
+          if (this.platform.is('android')) {
+            this.deleteReportFile();
+            this.storage.updateFilePathBudgetById(budgetId, '');
+          }
         });
       } else {
         this.restartData(budgetId);
       }
     });
   }
+
+  deleteReportFile = async () => {
+    let path = `pdf/bcar/orcameto_${this.client}.pdf`;
+    await Filesystem.deleteFile({
+      path: path,
+      directory: Directory.Documents,
+    });
+  };
 
   restartData(budgetId: number = 0) {
     if (budgetId === 0) {

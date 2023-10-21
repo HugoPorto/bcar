@@ -110,7 +110,9 @@ export class StorageService {
     const laborAndTotal = Math.abs(
       parseFloat(total.replace(',', '.')) - parseFloat(labor.replace(',', '.'))
     );
-    const sql = `INSERT INTO budgets (client, reference, budget, total, labor, laborAndTotal) VALUES (?,?,?,?,?,?);`;
+    const filePath = '';
+    const sql = `INSERT INTO budgets (client, reference, budget,
+      total, labor, laborAndTotal, filePath) VALUES (?,?,?,?,?,?,?);`;
     await this.db.run(sql, [
       client,
       reference,
@@ -118,6 +120,7 @@ export class StorageService {
       total,
       labor,
       laborAndTotal,
+      filePath,
     ]);
     await this.getBudgets();
 
@@ -162,6 +165,12 @@ export class StorageService {
       text: `Salvo com sucesso!`,
       duration: 'long',
     });
+  }
+
+  async updateFilePathBudgetById(id: string, filePath: string) {
+    const sql = `UPDATE budgets SET filePath='${filePath}' WHERE id=${id}`;
+    await this.db.run(sql);
+    await this.getBudgets();
   }
 
   /**

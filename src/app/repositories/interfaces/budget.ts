@@ -6,4 +6,5 @@ export interface DataBudget {
   total: string;
   labor: string;
   laborAndTotal: string;
+  filePath: string;
 }
