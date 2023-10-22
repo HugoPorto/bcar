@@ -24,7 +24,7 @@ export class DatabaseService {
       .pipe(
         map((res: any) => {
           console.log('res', res);
-          // return res.tables;
+          return res.tables;
         })
       );
   }
