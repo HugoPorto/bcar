@@ -1,13 +1,11 @@
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { Injectable } from '@angular/core';
-
 import { SQLiteService } from './sqlite.service';
 import { DbnameVersionService } from './dbname-version.service';
 import { BudgetUpgradeStatements } from '../upgrades/budget.upgrade.statements';
 import { DataBudget } from '../repositories/interfaces/budget';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Toast } from '@capacitor/toast';
-
 @Injectable()
 export class StorageService {
   /**
@@ -19,32 +17,22 @@ export class StorageService {
   public budgetList: BehaviorSubject<DataBudget[]> = new BehaviorSubject<
     DataBudget[]
   >([]);
-
   private databaseName: string = '';
-
   private bUpdStmts: BudgetUpgradeStatements = new BudgetUpgradeStatements();
-
   private versionUpgrades;
-
   private loadToVersion;
-
   private db!: SQLiteDBConnection;
-
   private isBudgetReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
   constructor(
     private sqliteService: SQLiteService,
     private dbVerService: DbnameVersionService
   ) {
     this.versionUpgrades = this.bUpdStmts.budgetUpgrades;
-
     this.loadToVersion =
       this.versionUpgrades[this.versionUpgrades.length - 1].toVersion;
   }
-
   async initializeDatabase(dbName: string) {
     this.databaseName = dbName;
-
     /**
      * create upgrade statements
      */
@@ -52,7 +40,6 @@ export class StorageService {
       database: this.databaseName,
       upgrade: this.versionUpgrades,
     });
-
     /**
      * create and/or open the database
      */
@@ -63,12 +50,9 @@ export class StorageService {
       this.loadToVersion,
       false
     );
-
     this.dbVerService.set(this.databaseName, this.loadToVersion);
-
     await this.getBudgets();
   }
-
   /**
    * Current database state
    * @returns
@@ -76,18 +60,30 @@ export class StorageService {
   budgetState() {
     return this.isBudgetReady.asObservable();
   }
-
   fetchBudgets(): Observable<DataBudget[]> {
     return this.budgetList.asObservable();
   }
-
   async loadBudgets() {
     const budgets: DataBudget[] = (
       await this.db.query('SELECT * FROM budgets ORDER BY id DESC LIMIT 10;')
     ).values as DataBudget[];
     this.budgetList.next(budgets);
   }
-
+  // async loadBudgetsPaging(page: number, pageSize: number) {
+  //   const offset = (page - 1) * pageSize;
+  //   const budgets: DataBudget[] = (
+  //     await this.db.query(`SELECT * FROM budgets ORDER BY id DESC LIMIT ${pageSize} OFFSET ${offset};`)
+  //   ).values as DataBudget[];
+  //   this.budgetList.next(budgets);
+  // }
+  async loadBudgetsPaging(offset: number) {
+    const budgets: DataBudget[] = (
+      await this.db.query(
+        `SELECT * FROM budgets ORDER BY id DESC LIMIT 10 OFFSET ${offset};`
+      )
+    ).values as DataBudget[];
+    return budgets;
+  }
   /**
    * Get all budgets
    */
@@ -95,7 +91,6 @@ export class StorageService {
     await this.loadBudgets();
     this.isBudgetReady.next(true);
   }
-
   /**
    * Add a new user
    */
@@ -123,13 +118,11 @@ export class StorageService {
       filePath,
     ]);
     await this.getBudgets();
-
     await Toast.show({
       text: `Salvo com sucesso!`,
       duration: 'long',
     });
   }
-
   /**
    * Update budget by id
    * @param id
@@ -140,7 +133,6 @@ export class StorageService {
     await this.db.run(sql);
     await this.getBudgets();
   }
-
   /**
    * Update budget by id
    * @param id
@@ -156,23 +148,25 @@ export class StorageService {
     const laborAndTotal = Math.abs(
       parseFloat(total.replace(',', '.')) - parseFloat(labor.replace(',', '.'))
     );
-
-    const sql = `UPDATE budgets SET budget='${budget}', client="${nameClient}", total="${total}", labor="${labor}", laborAndTotal="${laborAndTotal}" WHERE id=${id}`;
+    const reference = this.dataAtualFormatada();
+    const sql = `UPDATE budgets SET budget='${budget}',
+      client="${nameClient}",
+      total="${total}",
+      labor="${labor}",
+      reference="${reference}",
+      laborAndTotal="${laborAndTotal}" WHERE id=${id}`;
     await this.db.run(sql);
     await this.getBudgets();
-
     await Toast.show({
       text: `Salvo com sucesso!`,
       duration: 'long',
     });
   }
-
   async updateFilePathBudgetById(id: string, filePath: string) {
     const sql = `UPDATE budgets SET filePath='${filePath}' WHERE id=${id}`;
     await this.db.run(sql);
     await this.getBudgets();
   }
-
   /**
    * Get budget by id
    * @param id
@@ -187,7 +181,27 @@ export class StorageService {
     }
     return null;
   }
-
+  async getBudgetByNameCommon(client: string) {
+    const sql = `SELECT * FROM budgets WHERE client='${client}'`;
+    const result = await this.db.query(sql);
+    if (result && result.values && result.values.length > 0) {
+      const budget = result.values[0] as DataBudget;
+      return budget;
+    }
+    return null;
+  }
+  async getBudgetByName(client: string) {
+    console.log(
+      `Service: StorageService - Function: getBudgetByName - Param: ${client}`
+    );
+    const sql = `SELECT * FROM budgets WHERE client LIKE '%${client}%'`;
+    const result = await this.db.query(sql);
+    if (result && result.values && result.values.length > 0) {
+      const budget = result.values[0] as DataBudget;
+      return budget;
+    }
+    return null;
+  }
   /**
    * Delete budget by id
    * @param id
@@ -197,7 +211,6 @@ export class StorageService {
     await this.db.run(sql);
     await this.getBudgets();
   }
-
   dataAtualFormatada() {
     var data = new Date(),
       dia = data.getDate().toString(),
@@ -205,13 +218,21 @@ export class StorageService {
       mes = (data.getMonth() + 1).toString(), //+1 pois no getMonth Janeiro começa com zero.
       mesF = mes.length == 1 ? '0' + mes : mes,
       anoF = data.getFullYear();
-
     var hora = data.getHours();
     var minuto = data.getMinutes();
     var segundo = data.getSeconds();
-
     return (
-      anoF + '-' + mesF + '-' + diaF + 'T' + hora + ':' + minuto + ':' + segundo
+      anoF +
+      '-' +
+      mesF +
+      '-' +
+      diaF +
+      ' às ' +
+      hora +
+      ':' +
+      minuto +
+      ':' +
+      segundo
     );
   }
 }

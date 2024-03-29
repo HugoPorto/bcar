@@ -6,10 +6,9 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { StorageService } from './../services/storage.service';
-import { DatabaseService } from '../services/database.service';
 import { Budget } from '../models/budget';
 import { IBudget } from '../repositories/interfaces/ibudget';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { FileService } from '../services/file.service';
 
 @Component({
   selector: 'app-tab2',
@@ -29,16 +28,23 @@ export class Tab2Page {
   constructor(
     private alertController: AlertController,
     private storage: StorageService,
-    private databaseService: DatabaseService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private platform: Platform
+    private platform: Platform,
+    private fileService: FileService
   ) {
     this.buildBudget();
-    // this.databaseService.downloadDatabase();
   }
 
   ngOnInit() {
+    this.loadData();
+  }
+
+  onLaborChange() {
+    this.total = this.calculateTotalValue();
+  }
+
+  loadData() {
     this.activatedRoute.queryParams.subscribe((params) => {
       const budgetId = params['id'];
 
@@ -48,9 +54,7 @@ export class Tab2Page {
           var dataBudget: IBudget[] = JSON.parse(budget?.budget || '');
 
           this.labor = budget?.labor || '';
-
           this.client = budget?.client || '';
-
           this.budgets = [];
 
           dataBudget.forEach((element) => {
@@ -60,41 +64,13 @@ export class Tab2Page {
             newbudget.totalValue = element._totalValue;
             newbudget.created = element._created;
             newbudget.modified = element._modified;
-            this.budgets.push(newbudget);
+            this.budgets.unshift(newbudget);
           });
 
           this.total = this.calculateTotalValue();
 
           if (this.platform.is('android')) {
-            let path = `pdf/bcar/orcameto_${this.client}.pdf`;
-
-            Filesystem.stat({
-              path: path,
-              directory: Directory.Documents,
-            })
-              .then((result) => {
-                if (result.type === 'file') {
-                  console.log('Tab2[Novo] - Linha 77: ', 'O arquivo existe.');
-                  this.deleteReportFile();
-                  this.storage.updateFilePathBudgetById(budgetId, '');
-                } else if (result.type === 'directory') {
-                  console.log(
-                    'Tab2[Novo] - Linha 81: ',
-                    'O caminho especificado é um diretório.'
-                  );
-                } else {
-                  console.log(
-                    'Tab2[Novo] - Linha 86: ',
-                    'O arquivo não existe.'
-                  );
-                }
-              })
-              .catch((error) => {
-                console.error(
-                  'Tab2[Novo] - Linha 94: Erro ao verificar a existência do arquivo:',
-                  error
-                );
-              });
+            this.fileService.deleteReportFile(this.client, budgetId);
           }
         });
       } else {
@@ -102,14 +78,6 @@ export class Tab2Page {
       }
     });
   }
-
-  deleteReportFile = async () => {
-    let path = `pdf/bcar/orcameto_${this.client}.pdf`;
-    await Filesystem.deleteFile({
-      path: path,
-      directory: Directory.Documents,
-    });
-  };
 
   restartData(budgetId: number = 0) {
     if (budgetId === 0) {
@@ -146,11 +114,8 @@ export class Tab2Page {
       this.alertFormError(verify[1]);
     } else {
       this.updateTotalValue();
-
-      this.budgets.push(this.modelBudget);
-
+      this.budgets.unshift(this.modelBudget);
       this.total = this.calculateTotalValue();
-
       this.buildBudget();
     }
   }
@@ -201,7 +166,6 @@ export class Tab2Page {
     );
 
     this.restartData();
-
     this.router.navigate(['/tabs/tab1']);
   }
 
@@ -223,10 +187,5 @@ export class Tab2Page {
 
   async saveAndSend() {
     this.createBudget();
-    this.shareBudget();
   }
-
-  async shareBudget() {}
-
-  async discard() {}
 }

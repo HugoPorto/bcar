@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicModule, ViewWillEnter, Platform } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -11,8 +11,10 @@ import { of, switchMap } from 'rxjs';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { IBudget } from '../repositories/interfaces/ibudget';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 import { FileOpener } from '@capawesome-team/capacitor-file-opener';
+import { FileService } from '../services/file.service';
+import { InfiniteScrollCustomEvent } from '@ionic/angular';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -23,15 +25,31 @@ import { FileOpener } from '@capawesome-team/capacitor-file-opener';
   standalone: true,
   imports: [IonicModule, ExploreContainerComponent, CommonModule, FormsModule],
 })
-export class Tab1Page implements ViewWillEnter {
+export class Tab1Page implements ViewWillEnter, OnInit {
   pdf: any;
   budgets: DataBudget[] = [];
   filePath: any;
+  searchFlag = false;
+  offset = 10;
+  public data = [
+    'Amsterdam',
+    'Buenos Aires',
+    'Cairo',
+    'Geneva',
+    'Hong Kong',
+    'Istanbul',
+    'London',
+    'Madrid',
+    'New York',
+    'Panama City',
+  ];
+  public results = [...this.data];
 
   constructor(
     private storage: StorageService,
     private router: Router,
-    private platform: Platform
+    private platform: Platform,
+    private fileService: FileService
   ) {}
 
   ngOnInit() {
@@ -152,10 +170,12 @@ export class Tab1Page implements ViewWillEnter {
   }
 
   ionViewWillEnter() {
+    this.offset = 10;
     this.loadbudgets();
   }
 
   loadbudgets() {
+    this.searchFlag = false;
     try {
       this.storage
         .budgetState()
@@ -176,7 +196,10 @@ export class Tab1Page implements ViewWillEnter {
     }
   }
 
-  async removeBudget(id: number) {
+  async removeBudget(id: number, client: string) {
+    if (this.platform.is('android')) {
+      this.fileService.deleteReportFile(client, id.toString());
+    }
     await this.storage.deleteBudgetById(id.toString());
   }
 
@@ -213,5 +236,45 @@ export class Tab1Page implements ViewWillEnter {
         filePath
       );
     });
+  }
+
+  handleInput(event: any) {
+    const query = event.target.value.toLowerCase();
+    if (query !== '') {
+      this.budgets = this.budgets.filter(
+        (d) => d.client.toLocaleLowerCase().indexOf(query) > -1
+      );
+      if (this.budgets.length === 0) {
+        this.storage.getBudgetByName(event.target.value).then((budget) => {
+          if (budget) {
+            this.budgets = [budget];
+          } else {
+            this.searchFlag = true;
+          }
+        });
+      } else {
+        this.searchFlag = false;
+      }
+    } else {
+      this.loadbudgets();
+    }
+  }
+
+  private getItems() {
+    this.storage.loadBudgetsPaging(this.offset).then((budgets) => {
+      if (budgets.length > 0) {
+        budgets.forEach((budget) => {
+          this.budgets.push(budget);
+        });
+        this.offset += 10;
+      }
+    });
+  }
+
+  onIonInfinite(ev: any) {
+    this.getItems();
+    setTimeout(() => {
+      (ev as InfiniteScrollCustomEvent).target.complete();
+    }, 500);
   }
 }

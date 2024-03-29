@@ -1,9 +1,30 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="dark">
-    <ion-title> Orçamentos </ion-title>
+    <ion-title>BCar Orçamentos</ion-title>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="budgets.length">
+    <ion-searchbar color="light" [debounce]="1000" (ionInput)="handleInput($event)"
+      placeholder="Buscar"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 <ion-content color="light">
+  <ion-card *ngIf="!budgets.length && !searchFlag">
+    <ion-card-header>
+      <ion-card-title>BEM-VINDO!</ion-card-title>
+      <ion-card-subtitle>Você ainda não possui nenhum orçamento de peças ou serviços veiculares.</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      Para começar use o menu <span style="font-weight: bold;">Novo</span>.
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="searchFlag">
+    <ion-card-header>
+      <ion-card-title>Atenção!</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Nenhum registro encontrado.
+    </ion-card-content>
+  </ion-card>
   <div *ngFor="let budget of budgets">
     <ion-card>
       <ion-card-header>
@@ -15,7 +36,7 @@
         <ion-card-subtitle>Total - Mão de Obra: R$ {{budget.laborAndTotal }}</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-button color="dark" (click)="removeBudget(budget.id)"><ion-icon slot="start"
+        <ion-button color="dark" (click)="removeBudget(budget.id, budget.client)"><ion-icon slot="start"
             name="trash-bin"></ion-icon>Remover</ion-button>
         <ion-button color="dark" (click)="getBudget(budget.id)"><ion-icon slot="start" name="download"></ion-icon>Baixar
           Orçamento</ion-button>
@@ -25,4 +46,7 @@
       </ion-card-content>
     </ion-card>
   </div>
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

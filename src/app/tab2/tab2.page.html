@@ -27,7 +27,8 @@
     <ion-card-content>
       <ion-list>
         <ion-item>
-          <ion-input label="*Mão de Obra:" name="labor" [(ngModel)]="labor"></ion-input>
+          <ion-input label="*Mão de Obra:" name="labor" [(ngModel)]="labor"
+            (ngModelChange)="onLaborChange()"></ion-input>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -69,9 +70,7 @@
     <ion-card *ngFor="let budget of budgets; let index = index">
       <ion-card-header>
         <ion-card-subtitle>Quantidade {{ budget.quantity }}</ion-card-subtitle>
-        <ion-card-title>Cliente: {{ client }}</ion-card-title>
       </ion-card-header>
-
       <ion-card-content>
         <ion-grid>
           <ion-row>
