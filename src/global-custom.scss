@@ -1,0 +1,141 @@
+.color-primary {
+  color: var(--my-custom-color);
+}
+
+.color-secondary {
+  color: var(--my-custom-color2);
+}
+
+.color-tertiary {
+  color: var(--my-custom-color3);
+}
+
+.color-active {
+  color: var(--my-custom-active);
+}
+
+
+h1, .h1 {
+  font-size: 2.5rem;
+}
+
+h2, .h2 {
+  font-size: 2rem;
+}
+
+h3, .h3 {
+  font-size: 1.75rem !important;
+}
+
+h4, .h4 {
+  font-size: 1.3rem !important;
+}
+
+h5, .h5 {
+  font-size: 1.1rem !important;
+}
+
+h6, .h6 {
+  font-size: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--my-custom-color-h);
+}
+
+p, span {
+  color: var(--my-custom-color4) !important;
+  font-size: 14px;
+}
+
+.transparent {
+  --background: transparent !important;
+  background: transparent !important;
+}
+
+.round {
+  padding: 10px;
+  background: var(--ion-color-warning);
+  border-radius: 50%;
+}
+
+.clear {
+  display: block;
+  clear: both;
+}
+
+.background-size {
+  background-size: cover !important;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.box-shadow {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 999;
+}
+
+.box-shadow1 {
+  -webkit-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 1px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 1px 0 rgba(0, 0, 0, 0.12)
+}
+
+.btn-primary {
+  margin: 10px;
+  height: 46px;
+  --border-radius: 24px;
+  box-shadow: 0 5px 11px rgba(0, 0, 0, 0.13) !important;
+}
+
+
+.content {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.no-border-radius {
+  border-radius: 0;
+  --border-radius: 0;
+}
+
+.no-border-right-radius {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.no-border-left-radius {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.btn-default {
+  --padding-top: 11px;
+  --padding-bottom: 11px;
+  --padding-start: 9px;
+  --padding-end: 9px;
+  border-radius: 23px;
+  --border-radius: 23px;
+  --box-shadow: none;
+  height: auto;
+}
+
+.price {
+  color: var(--my-custom-active) !important;
+}
+
+.small {
+  font-size: 60% !important;
+}
+
+.filter {
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+}
+
+
+
+

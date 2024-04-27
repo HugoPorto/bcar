@@ -12,6 +12,7 @@ import {
   IonRouterOutlet,
 } from '@ionic/angular';
 import { CommonModule, Location } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -24,10 +25,15 @@ import { CommonModule, Location } from '@angular/common';
 export class AppComponent {
   @ViewChild(IonRouterOutlet, { static: true }) routerOutlet!: IonRouterOutlet;
   public environmentInjector = inject(EnvironmentInjector);
+  public appPages = [
+    { title: 'Clientes', url: '/client', icon: 'people' },
+    { title: 'Unidades', url: '/unit', icon: 'albums' },
+  ];
   constructor(
     private platform: Platform,
     private alertController: AlertController,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {
     this.initializeApp();
   }
@@ -36,6 +42,10 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.backButtonEvent();
     });
+  }
+
+  getCurrentUrl() {
+    return this.router.url;
   }
 
   backButtonEvent() {

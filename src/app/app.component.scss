@@ -1,0 +1,17 @@
+:host {
+    .profile {
+      background: linear-gradient(rgba(64, 71, 74, 0.63), rgba(64, 71, 74, 0.34)),
+      url(../assets/images/profile/6.jpg) center no-repeat;
+  
+      background-size: cover;
+      padding: 50px 0 15px 18px;
+      border-top: 0;
+    }
+  
+    .name {
+      color: #fff;
+      font-size: 20px;
+      margin-bottom: 5px;
+      line-height: 110%;
+    }
+  }

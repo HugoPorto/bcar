@@ -1,5 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>BCar Orçamentos</ion-title>
   </ion-toolbar>
   <ion-toolbar *ngIf="budgets.length">
@@ -7,7 +10,7 @@
       placeholder="Buscar"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
-<ion-content color="light">
+<ion-content>
   <ion-card *ngIf="!budgets.length && !searchFlag">
     <ion-card-header>
       <ion-card-title>BEM-VINDO!</ion-card-title>
