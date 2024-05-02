@@ -1,0 +1,40 @@
+:host {
+  ion-item {
+    --inner-padding-end: 0px !important;
+    margin: 0px !important;
+    border-radius: 3px 3px 0 0 !important
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+
+  h4 {
+    color: white;
+    padding: 5px 0px 5px 0px;
+  }
+
+  .active {
+    ion-card-content {
+      transform: translateY(0%);
+      opacity: 1;
+      height: 100%;
+    }
+  }
+
+  ion-card-content {
+    background-color: var(--my-custom-color2);
+    opacity: 0;
+    height: 0;
+    transform: translateY(-100%);
+    overflow: hidden;
+    transition: ease all 0.5s;
+    -webkit-transition: ease all 0.5s;
+    padding: 5px !important;
+  }
+
+  ion-button{
+    margin-right: 30px;
+  }
+}

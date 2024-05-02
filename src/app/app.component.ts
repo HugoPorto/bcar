@@ -14,21 +14,33 @@ import {
 import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 
+import { CustomSideMenuComponent } from './components/custom-side-menu/custom-side-menu.component';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, CustomSideMenuComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent {
   @ViewChild(IonRouterOutlet, { static: true }) routerOutlet!: IonRouterOutlet;
   public environmentInjector = inject(EnvironmentInjector);
-  public appPages = [
-    { title: 'Clientes', url: '/client', icon: 'people' },
-    { title: 'Unidades', url: '/unit', icon: 'albums' },
+  public pageList = [
+    {
+      iconName: 'home', displayText: 'Home', expanded: false, hasChild: false, url: '/tabs'
+    },
+    {
+      iconName: 'file-tray-full-outline', displayText: 'Registros', expanded: true, hasChild: true,
+      subOptions: [
+        { iconName: 'people', displayText: 'Clientes', url: '/clients' },
+        { iconName: 'layers', displayText: 'Unidades', url: '/units' },
+        { iconName: 'id-card-outline', displayText: 'Registro', url: '/signup' },
+      ]
+    }
   ];
+
   constructor(
     private platform: Platform,
     private alertController: AlertController,

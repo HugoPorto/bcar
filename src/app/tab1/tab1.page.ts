@@ -15,6 +15,9 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import { FileOpener } from '@capawesome-team/capacitor-file-opener';
 import { FileService } from '../services/file.service';
 import { InfiniteScrollCustomEvent } from '@ionic/angular';
+import { CustomCard5Component } from '../components/custom-card5/custom-card5.component';
+import { Card5Service } from './card5.service';
+import {timer} from 'rxjs';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -22,8 +25,11 @@ import { InfiniteScrollCustomEvent } from '@ionic/angular';
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss'],
+  template: `<app-custom-card5 (callParentFunctionEditNavigate)="editNavigate($event)" 
+    (callParentFunctionGetBudget)="getBudget($event)" 
+    (callParentFunctionRemoveBudget)="removeBudget($event)"></app-custom-card5>`,
   standalone: true,
-  imports: [IonicModule, ExploreContainerComponent, CommonModule, FormsModule],
+  imports: [IonicModule, ExploreContainerComponent, CommonModule, FormsModule, CustomCard5Component],
 })
 export class Tab1Page implements ViewWillEnter, OnInit {
   pdf: any;
@@ -44,16 +50,24 @@ export class Tab1Page implements ViewWillEnter, OnInit {
     'Panama City',
   ];
   public results = [...this.data];
+  list: Array<any>;
+  isLoading = true;
 
   constructor(
     private storage: StorageService,
     private router: Router,
     private platform: Platform,
-    private fileService: FileService
-  ) {}
+    private fileService: FileService,
+    private service: Card5Service
+  ) {
+    this.list = this.service.getList();
+  }
 
   ngOnInit() {
-    this.loadbudgets();
+    timer(2000).subscribe(r => {
+      this.isLoading = !this.isLoading;
+      this.loadbudgets();
+    });
   }
 
   pdfDownload(
@@ -196,11 +210,11 @@ export class Tab1Page implements ViewWillEnter, OnInit {
     }
   }
 
-  async removeBudget(id: number, client: string) {
+  async removeBudget({ budgetId, client }: { budgetId: number, client: string }) {
     if (this.platform.is('android')) {
-      this.fileService.deleteReportFile(client, id.toString());
+      this.fileService.deleteReportFile(client, budgetId.toString());
     }
-    await this.storage.deleteBudgetById(id.toString());
+    await this.storage.deleteBudgetById(budgetId.toString());
   }
 
   async getBudget(id: number) {
@@ -276,5 +290,9 @@ export class Tab1Page implements ViewWillEnter, OnInit {
     setTimeout(() => {
       (ev as InfiniteScrollCustomEvent).target.complete();
     }, 500);
+  }
+
+  signup() {
+    this.router.navigate(['/signup']);
   }
 }

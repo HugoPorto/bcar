@@ -1,0 +1,50 @@
+<ion-grid>
+  <ion-row>
+    <ion-col size-md="6" size="12" *ngFor="let item of list">
+      <ion-card class="ion-no-margin" [class.active]="item.active">
+        <ion-item lines="none" class="ion-no-padding">
+          <ion-label class="ion-padding-start ion-padding-end">
+            <p class="ion-text-uppercase">Data: {{item.reference}}</p>
+            <h4 class="ion-text-wrap"><strong>Orçamento Nº: {{item.id}}</strong></h4>
+            <div>
+              <ion-icon name="person" color="light"></ion-icon>
+              <p>Cliente: {{item.client}}</p>
+            </div>
+            <div>
+              <ion-icon name="logo-usd" color="warning"></ion-icon>
+              <p>Total: {{item.total}}</p>
+            </div>
+            <div>
+              <ion-icon name="logo-usd" color="warning"></ion-icon>
+              <p>Mão de Obra: {{item.labor}}</p>
+            </div>
+            <div>
+              <ion-icon name="logo-usd" color="warning"></ion-icon>
+              <p>Total - Mão de Obra: {{item.laborAndTotal}}</p>
+            </div>
+            <ion-grid class="ion-no-padding ion-margin-top">
+              <ion-row>
+                <ion-col size="4">
+                  <ion-button fill="clear" class="ion-no-padding">
+                    <ion-badge color="danger" (click)="callFunctionEditNavigate(item.id)">Editar</ion-badge>
+                  </ion-button>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-button fill="clear" class="ion-no-padding">
+                    <ion-badge color="danger" (click)="callFunctionBudget(item.id)">Baixar</ion-badge>
+                  </ion-button>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-button fill="clear" class="ion-no-padding">
+                    <ion-badge color="danger"
+                      (click)="callFunctionRemoveBudget(item.id, item.client)">Remover</ion-badge>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>

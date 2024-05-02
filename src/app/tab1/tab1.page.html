@@ -1,25 +1,16 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="dark">
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>BCar Orçamentos</ion-title>
   </ion-toolbar>
-  <ion-toolbar *ngIf="budgets.length">
+  <ion-toolbar>
     <ion-searchbar color="light" [debounce]="1000" (ionInput)="handleInput($event)"
       placeholder="Buscar"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-card *ngIf="!budgets.length && !searchFlag">
-    <ion-card-header>
-      <ion-card-title>BEM-VINDO!</ion-card-title>
-      <ion-card-subtitle>Você ainda não possui nenhum orçamento de peças ou serviços veiculares.</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      Para começar use o menu <span style="font-weight: bold;">Novo</span>.
-    </ion-card-content>
-  </ion-card>
   <ion-card *ngIf="searchFlag">
     <ion-card-header>
       <ion-card-title>Atenção!</ion-card-title>
@@ -28,27 +19,13 @@
       Nenhum registro encontrado.
     </ion-card-content>
   </ion-card>
-  <div *ngFor="let budget of budgets">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-subtitle>Nº: {{ budget.id }}</ion-card-subtitle>
-        <ion-card-subtitle>Data: {{ budget.reference }}</ion-card-subtitle>
-        <ion-card-subtitle>Cliente: {{ budget.client }}</ion-card-subtitle>
-        <ion-card-subtitle>Total: R$ {{ budget.total }}</ion-card-subtitle>
-        <ion-card-subtitle>Mão de Obra: R$ {{ budget.labor }}</ion-card-subtitle>
-        <ion-card-subtitle>Total - Mão de Obra: R$ {{budget.laborAndTotal }}</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-button color="dark" (click)="removeBudget(budget.id, budget.client)"><ion-icon slot="start"
-            name="trash-bin"></ion-icon>Remover</ion-button>
-        <ion-button color="dark" (click)="getBudget(budget.id)"><ion-icon slot="start" name="download"></ion-icon>Baixar
-          Orçamento</ion-button>
-        <ion-button color="dark" (click)="editNavigate(budget.id)"><ion-icon slot="start"
-            name="create"></ion-icon>Editar
-          Orçamento</ion-button>
-      </ion-card-content>
-    </ion-card>
+  <div class="spinner-container" *ngIf="isLoading">
+    <ion-spinner color="medium"></ion-spinner>
   </div>
+  <app-custom-card5 (callParentFunctionEditNavigate)="editNavigate($event)"
+    (callParentFunctionGetBudget)="getBudget($event)" (callParentFunctionRemoveBudget)="removeBudget($event)"
+    [list]="budgets" *ngIf="!isLoading">
+  </app-custom-card5>
   <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>

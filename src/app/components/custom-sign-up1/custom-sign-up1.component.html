@@ -1,0 +1,45 @@
+<ion-grid>
+  <ion-row>
+    <ion-col size="12" size-md="8" class="ion-text-center">
+      <img class="logo slide-top" src="../../../assets/images/avatar/8380015.jpg" />
+    </ion-col>
+    <ion-col size="12" size-md="8">
+      <form [formGroup]="rForm">
+        <ion-card class="ion-no-margin">
+          <ion-item lines="none" class="slide-bottom1">
+            <ion-icon name="mail" color="light"></ion-icon>
+            <ion-input formControlName="email" type="text" placeholder="email"></ion-input>
+          </ion-item>
+
+          <ion-text *ngIf="!rForm?.controls?.['email']?.valid  && rForm.controls?.['email']?.dirty">
+            <p>please enter a valid email.</p>
+          </ion-text>
+
+          <ion-item lines="none" class="slide-bottom2">
+            <ion-icon name="people" color="light"></ion-icon>
+            <ion-input formControlName="name" type="text" placeholder="username"></ion-input>
+          </ion-item>
+
+          <ion-text *ngIf="!rForm.controls?.['name']?.valid  && rForm.controls?.['name']?.dirty">
+            <p>userName Length at 3-15</p>
+          </ion-text>
+
+          <ion-item lines="none" class="slide-bottom3">
+            <ion-icon name="lock-closed" color="light"></ion-icon>
+            <ion-input formControlName="pwd" type="password"></ion-input>
+          </ion-item>
+
+          <ion-text *ngIf="!rForm.controls?.['pwd']?.valid  && rForm.controls?.['pwd']?.dirty">
+            <p>password Length at 6-15</p>
+          </ion-text>
+        </ion-card>
+      </form>
+    </ion-col>
+  </ion-row>
+  <ion-row class="slide-bottom4">
+    <ion-col size="12" size-md="8">
+      <ion-button expand="block" color="secondary" [disabled]="!rForm.valid">Sign Up
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>

@@ -3,6 +3,10 @@ ion-menu-button {
   color: var(--ion-color-primary-contrast) !important;
 }
 
+ion-content {
+  --background: var(--my-custom-background);
+}
+
 ion-badge {
   --padding-bottom: 9px;
   --padding-end: 12px;
@@ -13,7 +17,21 @@ ion-badge {
 }
 
 ion-card {
-  //background-color: var(--my-custom-primary) !important;
+  background: var(--my-custom-background-card);
+  color: var(--my-custom-color-h);
+}
+
+ion-card-subtitle {
+  color: var(--my-custom-color-h);
+  text-align: justify;
+}
+
+ion-label {
+  color: var(--my-custom-color-h);
+}
+
+ion-card-title {
+  color: var(--my-custom-color-h);
 }
 
 ion-item {
@@ -54,7 +72,6 @@ ion-avatar {
   overflow: visible;
 }
 
-
 ion-alert .alert-wrapper .alert-button-group {
   background: var(--ion-color-secondary) !important;
 
@@ -78,6 +95,3 @@ ion-select-popover {
 .action-sheet-cancel {
   background: var(--ion-color-secondary) !important;
 }
-
-
-

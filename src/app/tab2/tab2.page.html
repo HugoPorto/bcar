@@ -1,65 +1,47 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="dark">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title> Novo Orçamento </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content color="light">
-  <ion-item>
-    <h3>Total: {{ total }}</h3>
-  </ion-item>
-  <ion-item *ngIf="budgetId && budgets !== null && budgets.length > 0">
-    <div>
-      <ion-button fill="outline" expand="block" color="dark" (click)="updateBudget()">
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <ion-button shape="round" expand="block" color="danger" class="updateButton" (click)="updateBudget()"
+        *ngIf="budgetId && budgets !== null && budgets.length > 0">
         <ion-icon slot="start" name="save"></ion-icon>
         Atualizar</ion-button>
-    </div>
-  </ion-item>
-  <ion-card>
-    <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-input label="*Cliente:" name="client" [(ngModel)]="client"></ion-input>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-  <ion-card>
-    <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-input label="*Mão de Obra:" name="labor" [(ngModel)]="labor"
-            (ngModelChange)="onLaborChange()"></ion-input>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-  <ion-card>
-    <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-input label="*Qtd.:" name="quantity" [(ngModel)]="modelBudget.quantity"
-            (input)="updateTotalValue()"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-input label="Unidade:" name="unit" [(ngModel)]="modelBudget.unit" placeholder="Peça"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-input label="*Descrição:" name="description" [(ngModel)]="modelBudget.description"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-input label="*Valor Unitário R$:" name="unitaryValue" [(ngModel)]="modelBudget.unitaryValue"
-            (input)="updateTotalValue()"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-input label="Valor Total R$:" name="totalValue" [(ngModel)]="modelBudget.totalValue"
-            disabled></ion-input>
-        </ion-item>
-      </ion-list>
-      <ion-button fill="outline" expand="block" color="dark" (click)="addBudget()">
+      <h4>Total: {{ total }}</h4>
+      <ion-item>
+        <ion-input label="*Cliente:" name="client" [(ngModel)]="client"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="*Mão de Obra:" name="labor" [(ngModel)]="labor" (ngModelChange)="onLaborChange()"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="*Qtd.:" name="quantity" [(ngModel)]="modelBudget.quantity"
+          (input)="updateTotalValue()"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Unidade:" name="unit" [(ngModel)]="modelBudget.unit" placeholder="Peça"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="*Descrição:" name="description" [(ngModel)]="modelBudget.description"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="*Valor Unitário R$:" name="unitaryValue" [(ngModel)]="modelBudget.unitaryValue"
+          (input)="updateTotalValue()"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Valor Total R$:" name="totalValue" [(ngModel)]="modelBudget.totalValue" disabled></ion-input>
+      </ion-item>
+      <ion-button shape="round" expand="block" color="danger" (click)="addBudget()">
         <ion-icon slot="start" name="add"></ion-icon>
         Adicionar
       </ion-button>
-      <ion-button fill="outline" expand="block" color="dark" *ngIf="!budgetId && budgets !== null && budgets.length > 0"
+      <ion-button shape="round" expand="block" color="danger" *ngIf="!budgetId && budgets !== null && budgets.length > 0"
         (click)="createBudget()">
         <ion-icon slot="start" name="save"></ion-icon>
         Salvar
@@ -76,7 +58,7 @@
           <ion-row>
             <ion-col><ion-label>Unidade.</ion-label></ion-col>
             <ion-col><ion-label>Descrição</ion-label></ion-col>
-            <ion-col><ion-label>Valor Unitário</ion-label></ion-col>
+            <ion-col><ion-label>V. Unitário</ion-label></ion-col>
             <ion-col><ion-label>Valor Total.</ion-label></ion-col>
           </ion-row>
         </ion-grid>
@@ -88,7 +70,7 @@
             <ion-col><ion-label>{{ budget.totalValue }}</ion-label></ion-col>
           </ion-row>
         </ion-grid>
-        <ion-button expand="block" color="dark" (click)="removeItemBudget(index)">
+        <ion-button shape="round" expand="block" color="danger" (click)="removeItemBudget(index)">
           <ion-icon slot="start" name="trash-bin"></ion-icon>
           Remover
         </ion-button>

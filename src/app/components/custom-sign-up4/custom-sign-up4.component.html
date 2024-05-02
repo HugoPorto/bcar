@@ -1,0 +1,23 @@
+<ion-grid>
+  <ion-row>
+      <ion-col size="12" size-md="6">
+          <ion-segment class="ion-padding-top ion-margin-top" [(ngModel)]="selectType" color="warning">
+              <ion-segment-button value="login">
+                  <ion-label class="ion-text-uppercase">login</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="signup">
+                  <ion-label class="ion-text-uppercase">signup up</ion-label>
+              </ion-segment-button>
+          </ion-segment>
+
+          <ng-container [ngSwitch]="selectType">
+              <ng-template [ngSwitchCase]="'login'">
+                  <app-custom-login3></app-custom-login3>
+              </ng-template>
+              <ng-template [ngSwitchCase]="'signup'">
+                  <app-custom-sign-up1></app-custom-sign-up1>
+              </ng-template>
+          </ng-container>
+      </ion-col>
+  </ion-row>
+</ion-grid>

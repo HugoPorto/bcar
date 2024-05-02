@@ -1,0 +1,27 @@
+:host {
+    h4 {
+        margin-left: 10px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .updateButton{
+        margin-top: 0px;
+        margin-bottom: 20px;
+    }
+
+    ion-card {
+        padding-top: 10px;
+    }
+
+    ion-input {
+        color: var(--ion-color-primary-contrast) !important;
+        padding-left: 5px !important;
+        background: transparent !important;
+    }
+}
+
+ion-item {
+    border-radius: 10px !important;
+    --background: transparent !important;
+}

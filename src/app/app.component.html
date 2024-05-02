@@ -1,31 +1,14 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
-      <ion-content color="light">
-        <ion-list id="inbox-list">
-          <!-- <ion-list-header>Menu</ion-list-header> -->
-          <ion-menu-toggle
-            auto-hide="false"
-            *ngFor="let p of appPages; let i = index"
-          >
-            <ion-item
-              routerDirection="root"
-              [routerLink]="[p.url]" 
-              [queryParams]="{returnUrl: getCurrentUrl()}"
-              lines="none"
-              detail="false"
-              routerLinkActive="selected"
-            >
-              <ion-icon
-                aria-hidden="true"
-                slot="start"
-                [ios]="p.icon + '-outline'"
-                [md]="p.icon + '-sharp'"
-              ></ion-icon>
-              <ion-label>{{ p.title }}</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
+      <ion-content>
+        <div class="profile">
+          <ion-avatar>
+            <img src="assets/images/avatar/8380015.jpg">
+          </ion-avatar>
+          <h2 class="name">Amanda</h2>
+        </div>
+        <app-custom-side-menu [menuList]="pageList"></app-custom-side-menu>
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
