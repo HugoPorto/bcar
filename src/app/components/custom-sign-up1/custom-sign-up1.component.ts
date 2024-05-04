@@ -9,6 +9,7 @@ import {
 import { RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-custom-sign-up1',
@@ -25,14 +26,28 @@ import { IonicModule } from '@ionic/angular';
 })
 export class CustomSignUp1Component  implements OnInit {
   rForm: FormGroup;
-  constructor(private formBuilder: FormBuilder,) { 
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService
+  ) { 
     this.rForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(3)]],
       name: ['', [Validators.required, Validators.minLength(3)]],
-      pwd: ['', [Validators.required, Validators.minLength(6)]],
   });
   }
 
   ngOnInit() {}
 
+  onSubmit() {
+    console.log(this.rForm.value);
+    this.userService.addUser(this.rForm.value).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
 }

@@ -16,9 +16,9 @@
           </ion-text>
           <ion-item lines="none" class="slide2">
             <ion-icon name="lock-closed" color="light"></ion-icon>
-            <ion-input formControlName="pwd" type="password"></ion-input>
+            <ion-input formControlName="password" type="password"></ion-input>
           </ion-item>
-          <ion-text *ngIf="!lForm?.controls?.['pwd.valid']  && lForm?.controls?.['pwd']?.dirty">
+          <ion-text *ngIf="!lForm?.controls?.['password']?.valid  && lForm?.controls?.['password']?.dirty">
             <p>password Length at 6-15</p>
           </ion-text>
         </ion-card>
@@ -27,7 +27,7 @@
   </ion-row>
   <ion-row class="slide3">
     <ion-col size="12" size-md="8">
-      <ion-button expand="block" color="secondary" [disabled]="!lForm.valid">Sign In
+      <ion-button (click)="onSubmit()" expand="block" color="secondary" [disabled]="!lForm.valid">Sign In
       </ion-button>
     </ion-col>
   </ion-row>

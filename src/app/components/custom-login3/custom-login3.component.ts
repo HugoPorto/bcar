@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-// import {LoginService} from '../../pages/login/login.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { IonicModule } from '@ionic/angular';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-custom-login3',
@@ -24,13 +25,27 @@ export class CustomLogin3Component implements OnInit {
   logoList = ['logo-instagram', 'logo-facebook', 'logo-twitter'];
   animationClass = 'bounce-in-fwd';
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private userService: UserService) {
     this.lForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      pwd: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.userService.get('token').then(value => {
+      console.log('Token:', value);
+    });
+  }
 
+  onSubmit() {
+    this.userService.getToken(this.lForm.value).subscribe({
+      next: (response) => {
+        this.userService.set('token', response.token);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
 }

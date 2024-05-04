@@ -13,9 +13,9 @@ import { CustomSignUp4Component } from '../../components/custom-sign-up4/custom-
 })
 export class SignupPage implements OnInit {
   returnUrl: string = 'tabs';
-  constructor() { }
 
-  ngOnInit() {
-  }
+  constructor() {}
+
+  ngOnInit() {}
 
 }
