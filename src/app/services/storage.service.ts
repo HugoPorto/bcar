@@ -1,48 +1,38 @@
-import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { Injectable } from '@angular/core';
+
+import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { SQLiteService } from './sqlite.service';
 import { DbnameVersionService } from './dbname-version.service';
 import { BudgetUpgradeStatements } from '../upgrades/budget.upgrade.statements';
 import { DataBudget } from '../repositories/interfaces/budget';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Toast } from '@capacitor/toast';
+
 @Injectable()
 export class StorageService {
-  /**
-   * define uma variável que armazena uma lista de orçamentos
-   * e permite que outros componentes do aplicativo
-   * observem e recebam notificações
-   * quando a lista é atualizada.
-   */
-  public budgetList: BehaviorSubject<DataBudget[]> = new BehaviorSubject<
-    DataBudget[]
-  >([]);
+  public budgetList: BehaviorSubject<DataBudget[]> = new BehaviorSubject<DataBudget[]>([]);
   private databaseName: string = '';
   private bUpdStmts: BudgetUpgradeStatements = new BudgetUpgradeStatements();
   private versionUpgrades;
   private loadToVersion;
   private db!: SQLiteDBConnection;
   private isBudgetReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   constructor(
     private sqliteService: SQLiteService,
     private dbVerService: DbnameVersionService
   ) {
     this.versionUpgrades = this.bUpdStmts.budgetUpgrades;
-    this.loadToVersion =
-      this.versionUpgrades[this.versionUpgrades.length - 1].toVersion;
+    this.loadToVersion = this.versionUpgrades[this.versionUpgrades.length - 1].toVersion;
   }
   async initializeDatabase(dbName: string) {
     this.databaseName = dbName;
-    /**
-     * create upgrade statements
-     */
+
     await this.sqliteService.addUpgradeStatement({
       database: this.databaseName,
       upgrade: this.versionUpgrades,
     });
-    /**
-     * create and/or open the database
-     */
+
     this.db = await this.sqliteService.openDatabase(
       this.databaseName,
       false,
@@ -50,32 +40,36 @@ export class StorageService {
       this.loadToVersion,
       false
     );
+
     this.dbVerService.set(this.databaseName, this.loadToVersion);
+
     await this.getBudgets();
   }
-  /**
-   * Current database state
-   * @returns
-   */
+
   budgetState() {
     return this.isBudgetReady.asObservable();
   }
+
   fetchBudgets(): Observable<DataBudget[]> {
     return this.budgetList.asObservable();
   }
+
   async loadBudgets() {
     const budgets: DataBudget[] = (
       await this.db.query('SELECT * FROM budgets ORDER BY id DESC LIMIT 10;')
     ).values as DataBudget[];
+
     this.budgetList.next(budgets);
   }
-  // async loadBudgetsPaging(page: number, pageSize: number) {
-  //   const offset = (page - 1) * pageSize;
-  //   const budgets: DataBudget[] = (
-  //     await this.db.query(`SELECT * FROM budgets ORDER BY id DESC LIMIT ${pageSize} OFFSET ${offset};`)
-  //   ).values as DataBudget[];
-  //   this.budgetList.next(budgets);
-  // }
+
+  async loadBudgetsPagingOld(page: number, pageSize: number) {
+    const offset = (page - 1) * pageSize;
+    const budgets: DataBudget[] = (
+      await this.db.query(`SELECT * FROM budgets ORDER BY id DESC LIMIT ${pageSize} OFFSET ${offset};`)
+    ).values as DataBudget[];
+    this.budgetList.next(budgets);
+  }
+
   async loadBudgetsPaging(offset: number) {
     const budgets: DataBudget[] = (
       await this.db.query(
@@ -84,16 +78,12 @@ export class StorageService {
     ).values as DataBudget[];
     return budgets;
   }
-  /**
-   * Get all budgets
-   */
+
   async getBudgets() {
     await this.loadBudgets();
     this.isBudgetReady.next(true);
   }
-  /**
-   * Add a new user
-   */
+
   async addBudget(
     budget: string,
     nameClient: string,
@@ -123,21 +113,13 @@ export class StorageService {
       duration: 'long',
     });
   }
-  /**
-   * Update budget by id
-   * @param id
-   * @param active
-   */
+
   async inactiveBudgetById(id: string, active: number) {
     const sql = `UPDATE budgets SET active=${active} WHERE id=${id}`;
     await this.db.run(sql);
     await this.getBudgets();
   }
-  /**
-   * Update budget by id
-   * @param id
-   * @param active
-   */
+
   async updateBudgetById(
     id: string,
     budget: string,
@@ -162,16 +144,13 @@ export class StorageService {
       duration: 'long',
     });
   }
+
   async updateFilePathBudgetById(id: string, filePath: string) {
     const sql = `UPDATE budgets SET filePath='${filePath}' WHERE id=${id}`;
     await this.db.run(sql);
     await this.getBudgets();
   }
-  /**
-   * Get budget by id
-   * @param id
-   * @returns
-   */
+
   async getBudget(id: string) {
     const sql = `SELECT * FROM budgets WHERE id=${id}`;
     const result = await this.db.query(sql);
@@ -181,6 +160,7 @@ export class StorageService {
     }
     return null;
   }
+
   async getBudgetByNameCommon(client: string) {
     const sql = `SELECT * FROM budgets WHERE client='${client}'`;
     const result = await this.db.query(sql);
@@ -190,6 +170,7 @@ export class StorageService {
     }
     return null;
   }
+
   async getBudgetByName(client: string) {
     console.log(
       `Service: StorageService - Function: getBudgetByName - Param: ${client}`
@@ -202,20 +183,18 @@ export class StorageService {
     }
     return null;
   }
-  /**
-   * Delete budget by id
-   * @param id
-   */
+
   async deleteBudgetById(id: string) {
     const sql = `DELETE FROM budgets WHERE id=${id}`;
     await this.db.run(sql);
     await this.getBudgets();
   }
+
   dataAtualFormatada() {
     var data = new Date(),
       dia = data.getDate().toString(),
       diaF = dia.length == 1 ? '0' + dia : dia,
-      mes = (data.getMonth() + 1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+      mes = (data.getMonth() + 1).toString(),
       mesF = mes.length == 1 ? '0' + mes : mes,
       anoF = data.getFullYear();
     var hora = data.getHours();
@@ -234,5 +213,14 @@ export class StorageService {
       ':' +
       segundo
     );
+  }
+
+  getConnection() {
+    return this.db;
+  }
+
+  async listTables() {
+    const tables = await this.db.query("SELECT name FROM sqlite_master WHERE type='table';");
+    console.log(tables.values);
   }
 }

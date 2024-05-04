@@ -3,19 +3,42 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Clientes</ion-title>
+    <ion-title>Cliente</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-content>
-      <ion-item>
-        <ion-input label="*Cliente:" name="client"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="*Mão de Obra:" name="labor"></ion-input>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-md="6" size="12" *ngFor="let item of clients">
+        <ion-card class="ion-no-margin">
+          <ion-item lines="none" class="ion-no-padding">
+            <ion-label class="ion-padding-start ion-padding-end">
+              <div>
+                <ion-icon name="person" color="warning"></ion-icon>
+                <p>Cliente: {{item.name}}</p>
+              </div>
+              <div>
+                <ion-icon name="mail" color="warning"></ion-icon>
+                <p>Email: {{item.email}}</p>
+              </div>
+              <div>
+                <ion-icon name="call" color="warning"></ion-icon>
+                <p>Fone: {{item.phone}}</p>
+              </div>
+              <ion-grid class="ion-no-padding ion-margin-top">
+                <ion-row>
+                  <ion-col size="4">
+                    <ion-button fill="clear" class="ion-no-padding">
+                      <ion-badge color="danger" (click)="onEdit(item.id)">Editar</ion-badge>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-label>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

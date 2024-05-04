@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { StorageService } from './../services/storage.service';
 import { DataBudget } from '../repositories/interfaces/budget';
-import { of, switchMap } from 'rxjs';
+import { of, switchMap,timer } from 'rxjs';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { IBudget } from '../repositories/interfaces/ibudget';
@@ -16,8 +16,6 @@ import { FileOpener } from '@capawesome-team/capacitor-file-opener';
 import { FileService } from '../services/file.service';
 import { InfiniteScrollCustomEvent } from '@ionic/angular';
 import { CustomCard5Component } from '../components/custom-card5/custom-card5.component';
-import { Card5Service } from './card5.service';
-import {timer} from 'rxjs';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -37,20 +35,6 @@ export class Tab1Page implements ViewWillEnter, OnInit {
   filePath: any;
   searchFlag = false;
   offset = 10;
-  public data = [
-    'Amsterdam',
-    'Buenos Aires',
-    'Cairo',
-    'Geneva',
-    'Hong Kong',
-    'Istanbul',
-    'London',
-    'Madrid',
-    'New York',
-    'Panama City',
-  ];
-  public results = [...this.data];
-  list: Array<any>;
   isLoading = true;
 
   constructor(
@@ -58,13 +42,14 @@ export class Tab1Page implements ViewWillEnter, OnInit {
     private router: Router,
     private platform: Platform,
     private fileService: FileService,
-    private service: Card5Service
   ) {
-    this.list = this.service.getList();
   }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  ionViewWillEnter() {
     timer(2000).subscribe(r => {
+      this.offset = 10;
       this.isLoading = !this.isLoading;
       this.loadbudgets();
     });
@@ -181,11 +166,6 @@ export class Tab1Page implements ViewWillEnter, OnInit {
     this.router.navigate(['/tabs/tab2'], {
       queryParams: { id: budgetId },
     });
-  }
-
-  ionViewWillEnter() {
-    this.offset = 10;
-    this.loadbudgets();
   }
 
   loadbudgets() {

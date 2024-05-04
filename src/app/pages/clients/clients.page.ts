@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { IonicModule, ViewWillEnter } from '@ionic/angular';
+
+import { DataClient } from '../../repositories/interfaces/client';
+import { ClientService } from '../../services/client.service';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-clients',
@@ -10,11 +15,44 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class ClientsPage implements OnInit {
+export class ClientsPage implements OnInit, ViewWillEnter {
+  clients: DataClient[] = [];
 
-  constructor() { }
+  constructor(
+    private storage: ClientService,
+    private router: Router
+  ) { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.loadClietns();
   }
 
+  loadClietns() {
+    try {
+      this.storage
+        .clientState()
+        .pipe(
+          switchMap((res) => {
+            if (res) {
+              return this.storage.fetchClients();
+            } else {
+              return of([]);
+            }
+          })
+        )
+        .subscribe((data) => {
+          this.clients = data;
+        });
+    } catch (err) {
+      throw new Error(`Error: ${err}`);
+    }
+  }
+
+  async onEdit(id: number) {
+    this.router.navigate(['/client'], {
+      queryParams: { id: id },
+    });
+  }
 }

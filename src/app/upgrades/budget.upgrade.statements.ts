@@ -16,14 +16,18 @@ export class BudgetUpgradeStatements {
           );`,
       ],
     },
-    /* add new statements below for next database version when required*/
-    /*
-      {
+    {
       toVersion: 2,
       statements: [
-          `ALTER TABLE users ADD COLUMN email TEXT;`,
+        `CREATE TABLE IF NOT EXISTS clients(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          address TEXT NOT NUll,
+          phone TEXT NOT NUll,
+          active INTEGER DEFAULT 1
+          );`,
       ]
-      },
-      */
+    },
   ];
 }

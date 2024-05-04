@@ -32,11 +32,17 @@ export class AppComponent {
       iconName: 'home', displayText: 'Home', expanded: false, hasChild: false, url: '/tabs'
     },
     {
-      iconName: 'file-tray-full-outline', displayText: 'Registros', expanded: true, hasChild: true,
+      iconName: 'file-tray-full-outline', displayText: 'Perfil', expanded: true, hasChild: true,
       subOptions: [
-        { iconName: 'people', displayText: 'Clientes', url: '/clients' },
-        { iconName: 'layers', displayText: 'Unidades', url: '/units' },
+        { iconName: 'id-card-outline', displayText: 'Meu Perfil', url: '/signup' },
         { iconName: 'id-card-outline', displayText: 'Registro', url: '/signup' },
+      ]
+    },
+    {
+      iconName: 'file-tray-full-outline', displayText: 'Clientes', expanded: true, hasChild: true,
+      subOptions: [
+        { iconName: 'people', displayText: 'Listar', url: '/clients' },
+        { iconName: 'layers', displayText: 'Novo', url: '/client' },
       ]
     }
   ];

@@ -1,0 +1,28 @@
+:host {
+    ion-item {
+      --inner-padding-end: 0px !important;
+      margin: 0px !important;
+      border-radius: 3px 3px 0 0 !important
+    }
+  
+    div {
+      display: flex;
+      align-items: center;
+    }
+
+    div p {
+      padding-left: 5px;
+    }
+  
+    ion-card-content {
+      background-color: var(--my-custom-color2);
+      opacity: 0;
+      height: 0;
+      transform: translateY(-100%);
+      overflow: hidden;
+      transition: ease all 0.5s;
+      -webkit-transition: ease all 0.5s;
+      padding: 5px !important;
+    }
+  }
+  
