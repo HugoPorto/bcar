@@ -32,16 +32,12 @@ export class CustomLogin3Component implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.userService.get('token').then(value => {
-      console.log('Token:', value);
-    });
-  }
+  ngOnInit() {}
 
   onSubmit() {
     this.userService.getToken(this.lForm.value).subscribe({
       next: (response) => {
-        this.userService.set('token', response.token);
+        this.userService.set('token', response.token, this.lForm.value.email);
       },
       error: (error) => {
         console.log(error);

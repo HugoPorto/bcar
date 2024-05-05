@@ -15,6 +15,8 @@ import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { CustomSideMenuComponent } from './components/custom-side-menu/custom-side-menu.component';
+import { UserService } from './services/user.service';
+import { SideMenuHelper } from 'src/helpers/side-menu';
 
 @Component({
   selector: 'app-root',
@@ -27,33 +29,48 @@ import { CustomSideMenuComponent } from './components/custom-side-menu/custom-si
 export class AppComponent {
   @ViewChild(IonRouterOutlet, { static: true }) routerOutlet!: IonRouterOutlet;
   public environmentInjector = inject(EnvironmentInjector);
-  public pageList = [
-    {
-      iconName: 'home', displayText: 'Home', expanded: false, hasChild: false, url: '/tabs'
-    },
-    {
-      iconName: 'file-tray-full-outline', displayText: 'Perfil', expanded: true, hasChild: true,
-      subOptions: [
-        { iconName: 'id-card-outline', displayText: 'Meu Perfil', url: '/signup' },
-        { iconName: 'id-card-outline', displayText: 'Registro', url: '/signup' },
-      ]
-    },
-    {
-      iconName: 'file-tray-full-outline', displayText: 'Clientes', expanded: true, hasChild: true,
-      subOptions: [
-        { iconName: 'people', displayText: 'Listar', url: '/clients' },
-        { iconName: 'layers', displayText: 'Novo', url: '/client' },
-      ]
-    }
-  ];
+  public pageList = SideMenuHelper.getSideMenu();
+  public name?: string;
 
   constructor(
     private platform: Platform,
     private alertController: AlertController,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {
     this.initializeApp();
+    this.userService.login.subscribe((value) => {
+      if (!value) {
+        this.pageList = SideMenuHelper.getSideMenu();
+      } else {
+        if (this.pageList[1] && this.pageList[1].subOptions) {
+          console.log(this.pageList[1].subOptions[1]);
+          this.removeRegistro();
+        }
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.userService.get('login').then((value) => {
+        console.log(value);
+        if (value) {
+          this.userService.get('email').then((value) => {
+            console.log(value);
+            this.name = value;
+            this.removeRegistro();
+          });
+        }
+      });
+    }, 2500);
+  }
+
+  private removeRegistro() {
+    if (this.pageList[1] && this.pageList[1].subOptions) {
+      this.pageList[1].subOptions.splice(1, 1);
+    }
   }
 
   initializeApp() {

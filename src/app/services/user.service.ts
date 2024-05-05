@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -15,6 +15,7 @@ interface Post {
   providedIn: 'root'
 })
 export class UserService {
+  login = new EventEmitter<boolean>();
   apiSignupUrl = 'https://localhost:7051/members';
   apiToken = 'https://localhost:7051/token';
 
@@ -34,7 +35,7 @@ export class UserService {
   }
 
   getUsers(): Observable<any> {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InZpY3Rvci5wb3J0bzczMzg5QGdtYWlsLmNvbSIsIm5hbWVpZCI6IjM3NTEwNzQ5LWY2ZWMtNDM4ZS05Yjk1LWY0MjZkMjk1YTI2ZSIsIkVtcGxveWVlQ29kZSI6IjA1IiwiTmFtZSI6InZpY3RvciBodWdvIiwiQ3JlYXRlZEJ5IjoiMTllYThmNTYtZGQwOS00NWRiLWFhYTQtNTJjZWJiZWRkOWM0IiwibmJmIjoxNzE0NzgwMjAyLCJleHAiOjE3NDYzMTYyMDIsImlhdCI6MTcxNDc4MDIwMiwiaXNzIjoiSVdhbnRBcHBJc3N1ZXIiLCJhdWQiOiJBdWRpZW5jZSJ9.5MlyUORHyN8O-FY6SBiSqdPFd06DWsKYnzLfcjNgk3I';
+    const token = this._storage?.get('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any>(this.apiSignupUrl, { headers });
   }
@@ -47,9 +48,14 @@ export class UserService {
     return this.http.post<any>(this.apiToken, user);
   }
 
-  public async set(key: string, value: any): Promise<any> {
+  public async set(key: string, value: any, email?: string): Promise<any> {
     this._storage?.set(key, value).then(() => {
-      console.log('Token saved');
+      this._storage?.set('login', true).then(() => {
+        this._storage?.set('email', email);
+        this._storage?.get('login').then(value => {
+          this.login.emit(value);
+        });
+      });
     });
   }
 
@@ -63,6 +69,7 @@ export class UserService {
 
   public async clear() {
     await this._storage?.clear();
+    this.login.emit(false);
   }
 
   public async remove(key: string) {
