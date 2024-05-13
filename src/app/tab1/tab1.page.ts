@@ -50,7 +50,7 @@ export class Tab1Page implements ViewWillEnter, OnInit {
   ionViewWillEnter() {
     timer(2000).subscribe(r => {
       this.offset = 10;
-      this.isLoading = !this.isLoading;
+      this.isLoading = false;
       this.loadbudgets();
     });
   }
@@ -169,7 +169,7 @@ export class Tab1Page implements ViewWillEnter, OnInit {
   }
 
   loadbudgets() {
-    this.searchFlag = false;
+    this.searchFlag = true;
     try {
       this.storage
         .budgetState()
@@ -183,7 +183,12 @@ export class Tab1Page implements ViewWillEnter, OnInit {
           })
         )
         .subscribe((data) => {
-          this.budgets = data;
+          if (data.length) {
+            this.budgets = data;
+            this.searchFlag = false;
+          } else {
+            this.searchFlag = true;
+          }
         });
     } catch (err) {
       throw new Error(`Error: ${err}`);

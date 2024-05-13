@@ -13,5 +13,9 @@
         <ion-icon color="danger" slot="start" name="settings" size="large"></ion-icon>
         <ion-label>Limpar Dados</ion-label>
       </ion-item>
+      <ion-item [button]="true" (click)="useClient()">
+        <ion-icon color="{{configUseClient ? 'primary' : 'danger'}}" slot="start" name="settings" size="large"></ion-icon>
+        <ion-label>Usar Clientes Registrados</ion-label>
+      </ion-item>
     </div>
 </ion-content>

@@ -5,14 +5,17 @@
     </ion-buttons>
     <ion-title>Cliente</ion-title>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar color="light" [debounce]="1000" (ionInput)="handleInput($event)"
+      placeholder="Buscar"></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
-
 <ion-content>
   <ion-grid>
     <ion-row>
       <ion-col size-md="6" size="12" *ngFor="let item of clients">
         <ion-card class="ion-no-margin">
-          <ion-item lines="none" class="ion-no-padding">
+          <ion-item lines="none" class="ion-no-padding" [button]="true" (click)="onEdit(item.id)">
             <ion-label class="ion-padding-start ion-padding-end">
               <div>
                 <ion-icon name="person" color="warning"></ion-icon>
@@ -26,19 +29,18 @@
                 <ion-icon name="call" color="warning"></ion-icon>
                 <p>Fone: {{item.phone}}</p>
               </div>
-              <ion-grid class="ion-no-padding ion-margin-top">
-                <ion-row>
-                  <ion-col size="4">
-                    <ion-button fill="clear" class="ion-no-padding">
-                      <ion-badge color="danger" (click)="onEdit(item.id)">Editar</ion-badge>
-                    </ion-button>
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
             </ion-label>
           </ion-item>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="warning" (click)="openClient()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

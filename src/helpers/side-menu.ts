@@ -6,6 +6,9 @@ export class SideMenuHelper {
           iconName: 'home', displayText: 'Home', expanded: false, hasChild: false, url: '/tabs'
         },
         {
+          iconName: 'car', displayText: 'Cars', expanded: false, hasChild: false, url: '/cars'
+        },
+        {
           iconName: 'file-tray-full-outline', displayText: 'Perfil', expanded: true, hasChild: true,
           subOptions: [
             { iconName: 'id-card-outline', displayText: 'Meu Perfil', url: '/profile' },

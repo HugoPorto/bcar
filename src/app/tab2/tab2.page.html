@@ -14,8 +14,11 @@
         <ion-icon slot="start" name="save"></ion-icon>
         Atualizar</ion-button>
       <h4>Total: {{ total }}</h4>
-      <ion-item>
-        <ion-input label="*Cliente:" name="client" [(ngModel)]="client"></ion-input>
+      <ion-item [ngSwitch]="showClients">
+        <ion-select *ngSwitchCase="true" placeholder="Selecione um cliente" name="client" [(ngModel)]="client">
+          <ion-select-option *ngFor="let client of clients" [value]="client.name">{{client.name}}</ion-select-option>
+        </ion-select>
+        <ion-input *ngSwitchCase="false" label="*Cliente:" name="client" [(ngModel)]="client"></ion-input>
       </ion-item>
       <ion-item>
         <ion-input label="*Mão de Obra:" name="labor" [(ngModel)]="labor" (ngModelChange)="onLaborChange()"></ion-input>
@@ -41,8 +44,8 @@
         <ion-icon slot="start" name="add"></ion-icon>
         Adicionar
       </ion-button>
-      <ion-button shape="round" expand="block" color="danger" *ngIf="!budgetId && budgets !== null && budgets.length > 0"
-        (click)="createBudget()">
+      <ion-button shape="round" expand="block" color="danger"
+        *ngIf="!budgetId && budgets !== null && budgets.length > 0" (click)="createBudget()">
         <ion-icon slot="start" name="save"></ion-icon>
         Salvar
       </ion-button>

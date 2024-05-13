@@ -37,7 +37,7 @@ export class AppComponent {
     private alertController: AlertController,
     private location: Location,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
   ) {
     this.initializeApp();
     this.userService.login.subscribe((value) => {
@@ -46,28 +46,29 @@ export class AppComponent {
       } else {
         if (this.pageList[1] && this.pageList[1].subOptions) {
           console.log(this.pageList[1].subOptions[1]);
-          this.removeRegistro();
+          this.removeRegister();
         }
       }
     });
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.userService.get('login').then((value) => {
-        console.log(value);
-        if (value) {
-          this.userService.get('email').then((value) => {
-            console.log(value);
-            this.name = value;
-            this.removeRegistro();
-          });
-        }
-      });
-    }, 2500);
+  async ngAfterViewInit() {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      const loginValue = await this.userService.get('login');
+      console.log(loginValue);
+      if (loginValue) {
+        const emailValue = await this.userService.get('email');
+        console.log(emailValue);
+        this.name = emailValue;
+        this.removeRegister();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  private removeRegistro() {
+  private removeRegister() {
     if (this.pageList[1] && this.pageList[1].subOptions) {
       this.pageList[1].subOptions.splice(1, 1);
     }

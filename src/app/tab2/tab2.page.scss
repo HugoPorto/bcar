@@ -24,4 +24,8 @@
         border-radius: 10px !important;
         --background: transparent !important;
     }
+
+    ion-select {
+        color: var(--ion-color-primary-contrast) !important;
+    }
 }

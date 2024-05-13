@@ -14,20 +14,43 @@ import { Toast } from '@capacitor/toast';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class ConfigsPage implements OnInit {
+  configUseClient?: boolean;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    try {
+      const keys = await this.userService.keys();
+      console.log(keys);
+      this.configUseClient = await this.userService.get('clientUse');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   cleanData() {
-    this.userService.clear().then(() => {
+    this.userService.removeUser('email', 'login', 'token').then(() => {
       Toast.show({
-        text: 'Dados limpos com sucesso!',
+        text: 'Dados limpos!',
         duration: 'long'
       });
     });
+  }
+
+  async useClient() {
+    try {
+      await this.userService.setClient(!this.configUseClient);
+      this.configUseClient = !this.configUseClient;
+      console.log(this.configUseClient);
+      const toastText = this.configUseClient ? 'Clientes selecionados!' : 'Clientes não selecionados!';
+      Toast.show({
+        text: toastText,
+        duration: 'long'
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

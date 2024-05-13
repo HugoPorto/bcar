@@ -78,6 +78,7 @@ export class ClientPage implements OnInit {
           this.aForm.value.address,
           this.aForm.value.phone
         );
+        this.router.navigate(['/clients']);
       } else {
         this.storage.addClient(
           this.aForm.value.name,
@@ -85,7 +86,6 @@ export class ClientPage implements OnInit {
           this.aForm.value.address,
           this.aForm.value.phone
         );
-
         this.router.navigate(['/clients']);
       }
     });

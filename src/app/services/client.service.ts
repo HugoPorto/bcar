@@ -53,6 +53,14 @@ export class ClientService {
     this.isClientReady.next(true);
   }
 
+  async loadClientsToBudgets() {
+    const clients: DataClient[] = (
+      await this.db.query('SELECT * FROM clients ORDER BY id DESC LIMIT 10;')
+    ).values as DataClient[];
+
+    return clients;
+  }
+
   async addClient(
     name: string,
     email: string,
@@ -96,5 +104,24 @@ export class ClientService {
       text: `Cliente salvo com sucesso!`,
       duration: 'long',
     });
+  }
+
+  async getClientByName(client: string) {
+    const sql = `SELECT * FROM clients WHERE name LIKE '%${client}%'`;
+    const result = await this.db.query(sql);
+    if (result && result.values && result.values.length > 0) {
+      const budget = result.values[0] as DataClient;
+      return budget;
+    }
+    return null;
+  }
+
+  async loadClientsPaging(offset: number) {
+    const clientes: DataClient[] = (
+      await this.db.query(
+        `SELECT * FROM clients ORDER BY id DESC LIMIT 10 OFFSET ${offset};`
+      )
+    ).values as DataClient[];
+    return clientes;
   }
 }

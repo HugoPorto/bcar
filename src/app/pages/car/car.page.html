@@ -1,0 +1,154 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismissModal()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{car.carro}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-card class="ion-no-margin">
+          <img [src]="car.imagem">
+          <ion-card-content>
+            <h4>{{car.carro}}</h4>
+            <p>Ano: {{car.ano}}</p>
+            <p>Preço: {{car.preco}}</p>
+            <p>Desvalorização: {{car.desvalorizacao}}</p>
+            <p>Propulsão: {{car.propulsao}}</p>
+            <p>Combustível: {{car.combustivel}}</p>
+            <p>IPVA: {{car.IPVA}}</p>
+            <p>Seguro: {{car.seguro}}</p>
+            <p>Revisões: {{car.revisoes}}</p>
+            <p>Procedência: {{car.procedencia}}</p>
+            <p>Garantia: {{car.garantia}}</p>
+            <p>Configuração: {{car.configuracao}}</p>
+            <p>Porte: {{car.porte}}</p>
+            <p>Lugares: {{car.lugares}}</p>
+            <p>Portas: {{car.portas}}</p>
+            <p>Geração: {{car.geracao}}</p>
+            <p>Plataforma: {{car.plataforma}}</p>
+            <p>Índice CNW: {{car.indiceCNW}}</p>
+            <p>Ranking CNW: {{car.rankingCNW}}</p>
+            <p>Proteção Adulto: {{car.protecao_adulto}}</p>
+            <p>Proteção Infantil: {{car.protecao_infantil}}</p>
+            <p>Proteção Pedestre: {{car.protecao_pedestre}}</p>
+            <p>Assistência Segurança: {{car.assitencia_seguranca}}</p>
+            
+            <!-- Motor -->
+            <p>Motor:</p>
+            <ul>
+                <li>Instalação: {{car.motor.instalacao}}</li>
+                <li>Aspiração: {{car.motor.aspiracao}}</li>
+                <li>Disposição: {{car.motor.disposicao}}</li>
+                <li>Alimentação: {{car.motor.alimentacao}}</li>
+                <li>Cilindros: {{car.motor.cilindros}}</li>
+                <li>Comando de válvulas: {{car.motor.comando_valvulas}}</li>
+                <li>Cilindrada unitária: {{car.motor.cilindrada_unitaria}}</li>
+                <li>Acionamento: {{car.motor.acionamento}}</li>
+                <li>Válvulas por cilindro: {{car.motor.valvulas_por_cilindro}}</li>
+                <li>Diâmetro do cilindro: {{car.motor.diametro_cilindo}}</li>
+                <li>Razão de compressão: {{car.motor.razao_de_compressao}}</li>
+                <li>Curso do pistão: {{car.motor.curso_pistao}}</li>
+                <li>Deslocamento: {{car.motor.deslocamento}}</li>
+                <li>Potência máxima: {{car.motor.potencia_maxima}}</li>
+                <li>Torque máximo: {{car.motor.torque_maximo}}</li>
+                <li>Peso/potência: {{car.motor.peso_potencia}}</li>
+                <li>Torque específico: {{car.motor.torque_especifico}}</li>
+                <li>Peso/torque: {{car.motor.peso_torque}}</li>
+                <li>Potência específica: {{car.motor.potencia_especifica}}</li>
+            </ul>
+            
+            <!-- Transmissão -->
+            <p>Transmissão:</p>
+            <ul>
+                <li>Tração: {{car.transmissao.tracao}}</li>
+                <li>Câmbio: {{car.transmissao.cambio}}</li>
+                <li>Código do câmbio: {{car.transmissao.codigodo_cambio}}</li>
+                <li>Acoplamento: {{car.transmissao.acoplamento}}</li>
+            </ul>
+            
+            <!-- Suspensão -->
+            <p>Suspensão:</p>
+            <ul>
+                <li>Dianteira: {{car.suspensao.dianteira}}</li>
+                <li>Elemento elástico dianteiro: {{car.suspensao.elemento_elastico_dianteiro}}</li>
+                <li>Traseira: {{car.suspensao.traseira}}</li>
+                <li>Elemento elástico traseiro: {{car.suspensao.elemento_elastico_traseiro}}</li>
+            </ul>
+            
+            <!-- Freios -->
+            <p>Freios:</p>
+            <ul>
+                <li>Dianteiros: {{car.freios.dianteiros}}</li>
+                <li>Traseiro: {{car.freios.traseiro}}</li>
+            </ul>
+            
+            <!-- Direção -->
+            <p>Direção:</p>
+            <ul>
+                <li>Assistência: {{car.direcao.assistencia}}</li>
+                <li>Diâmetro de giro: {{car.direcao.diametro_de_giro}}</li>
+            </ul>
+            
+            <!-- Pneus -->
+            <p>Pneus:</p>
+            <ul>
+                <li>Dianteiros: {{car.pneus.aianteiros}}</li>
+                <li>Altura do flanco dianteiro: {{car.pneus.altura_flanco_dianteiro}}</li>
+                <li>Traseiros: {{car.pneus.traseiros}}</li>
+                <li>Altura do flanco traseiro: {{car.pneus.altura_flanco_traseiro}}</li>
+            </ul>
+            
+            <!-- Dimensões -->
+            <p>Dimensões:</p>
+            <ul>
+                <li>Comprimento: {{car.dimensoes.comprimento}}</li>
+                <li>Largura: {{car.dimensoes.largura}}</li>
+                <li>Distância entre eixos: {{car.dimensoes.distancia_entre_eixos}}</li>
+                <li>Altura: {{car.dimensoes.altura}}</li>
+                <li>Porta-malas: {{car.dimensoes.porta_malas}}</li>
+                <li>Tanque de combustível: {{car.dimensoes.tanque_combustivel}}</li>
+                <li>Peso: {{car.dimensoes.Peso}}</li>
+            </ul>
+            
+            <!-- Aerodinâmica -->
+            <p>Aerodinâmica:</p>
+            <ul>
+                <li>Área frontal: {{car.aerodinamica.area_frontal_a}}</li>
+                <li>Coeficiente de arrasto: {{car.aerodinamica.coef_arrasto}}</li>
+                <li>Área frontal corrigida: {{car.aerodinamica.area_frontal_corrigida}}</li>
+            </ul>
+            
+            <!-- Desempenho -->
+            <p>Desempenho:</p>
+            <ul>
+                <li>Velocidade máxima: {{car.desempenho.velocidade_maxima}}</li>
+                <li>Aceleração de 0 a 100 km/h: {{car.desempenho.aceleracao.zero_cem}}</li>
+            </ul>
+            
+            <!-- Consumo -->
+            <p>Consumo:</p>
+            <ul>
+                <li>Urbano: {{car.consumo.urbano}}</li>
+                <li>Rodoviário: {{car.consumo.rodoviario}}</li>
+            </ul>
+            
+            <!-- Autonomia -->
+            <p>Autonomia:</p>
+            <ul>
+                <li>Urbana: {{car.autonomia.urbana}}</li>
+                <li>Rodoviária: {{car.autonomia.rodoviaria}}</li>
+            </ul>
+        </ion-card-content>
+        
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

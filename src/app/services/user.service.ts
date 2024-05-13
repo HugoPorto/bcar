@@ -49,14 +49,15 @@ export class UserService {
   }
 
   public async set(key: string, value: any, email?: string): Promise<any> {
-    this._storage?.set(key, value).then(() => {
-      this._storage?.set('login', true).then(() => {
-        this._storage?.set('email', email);
-        this._storage?.get('login').then(value => {
-          this.login.emit(value);
-        });
-      });
-    });
+    try {
+      await this._storage?.set(key, value);
+      await this._storage?.set('login', true);
+      await this._storage?.set('email', email);
+      const loginValue = await this._storage?.get('login');
+      this.login.emit(loginValue);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   public async get(key: string) {
@@ -74,5 +75,16 @@ export class UserService {
 
   public async remove(key: string) {
     await this._storage?.remove(key);
+  }
+
+  public async removeUser(email: string, login: string, token: string) {
+    await this._storage?.remove(email);
+    await this._storage?.remove(login);
+    await this._storage?.remove(token);
+    this.login.emit(false);
+  }
+
+  public async setClient(cleintUse?: boolean): Promise<any> {
+    this._storage?.set('clientUse', cleintUse);
   }
 }

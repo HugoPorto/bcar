@@ -9,6 +9,9 @@ import { StorageService } from './../services/storage.service';
 import { Budget } from '../models/budget';
 import { IBudget } from '../repositories/interfaces/ibudget';
 import { FileService } from '../services/file.service';
+import { ClientService } from '../services/client.service';
+import { DataClient } from '../repositories/interfaces/client';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-tab2',
@@ -24,6 +27,8 @@ export class Tab2Page {
   client: string = '';
   labor: string = '';
   budgetId: string = '';
+  clients: DataClient[] = [];
+  showClients?: boolean;
 
   constructor(
     private alertController: AlertController,
@@ -31,7 +36,9 @@ export class Tab2Page {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private platform: Platform,
-    private fileService: FileService
+    private fileService: FileService,
+    private clientService: ClientService,
+    private userService: UserService
   ) {
     this.buildBudget();
   }
@@ -47,6 +54,16 @@ export class Tab2Page {
   loadData() {
     this.activatedRoute.queryParams.subscribe((params) => {
       const budgetId = params['id'];
+
+      this.clientService.loadClientsToBudgets().then((clients) => {
+        this.clients = clients;
+        console.log(this.clients);
+      });
+
+      this.userService.get('clientUse').then((client) => {
+        this.showClients = client;
+        console.log(this.showClients);
+      });
 
       if (budgetId) {
         this.budgetId = budgetId;
