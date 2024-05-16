@@ -6,9 +6,7 @@ import {
   SQLiteConnection,
   SQLiteDBConnection,
   CapacitorSQLitePlugin,
-  capSQLiteUpgradeOptions,
-  capSQLiteResult,
-  capSQLiteValues,
+  capSQLiteUpgradeOptions
 } from '@capacitor-community/sqlite';
 
 /**
@@ -51,6 +49,7 @@ export class SQLiteService {
       await this.sqliteConnection.initWebStore();
     } catch (err: any) {
       const msg = err.message ? err.message : err;
+      console.error(`initWebStore: ${msg}`);
       return Promise.reject(`initWebStore: ${err}`);
     }
   }

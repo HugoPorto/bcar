@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ViewWillEnter, Platform } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -14,7 +13,7 @@ import { IBudget } from '../repositories/interfaces/ibudget';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { FileOpener } from '@capawesome-team/capacitor-file-opener';
 import { FileService } from '../services/file.service';
-import { InfiniteScrollCustomEvent } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, IonicModule, ViewWillEnter, Platform } from '@ionic/angular';
 import { CustomCard5Component } from '../components/custom-card5/custom-card5.component';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
